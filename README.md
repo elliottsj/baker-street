@@ -23,7 +23,7 @@ To set up your development environment:
 
 #### Install PostgreSQL
 
-[Installation varies by platform](http://www.postgresql.org/download/)
+[Installation varies by platform](http://www.postgresql.org/download/).
 
 Once installed, the `pg_config` executable must be on your `PATH`.
 Setup varies by platform; [here are instructions for Postgres.app](http://postgresapp.com/documentation/cli-tools.html)
