@@ -35,7 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
+    'dashboard',
     'rest_framework',
 )
 
@@ -96,9 +96,9 @@ STATICFILES_DIRS = (
 # Templates
 # https://docs.djangoproject.com/en/1.7/ref/settings/#template-dirs
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
+# TEMPLATE_DIRS = (
+#     os.path.join(BASE_DIR, 'templates'),
+# )
 
 # Suit
 # http://django-suit.readthedocs.org/en/develop/
@@ -116,3 +116,11 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
+
+
+# Django Suit configuration
+# http://django-suit.readthedocs.org/en/develop/configuration.html
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': 'Baker Street',
+}

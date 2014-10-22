@@ -1,4 +1,4 @@
-from app.models import Document, Question
+from dashboard.models import Document, Question
 from django.contrib import admin
 
 

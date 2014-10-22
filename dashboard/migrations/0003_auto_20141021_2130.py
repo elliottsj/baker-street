@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ('dashboard', '0002_auto_20141021_2127'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='document',
             name='publish_date',
-            field=models.DateField(blank=True),
+            field=models.DateField(null=True),
         ),
     ]
