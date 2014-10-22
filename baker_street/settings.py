@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
     'dashboard',
     'rest_framework',
 )
@@ -123,4 +124,12 @@ ALLOWED_HOSTS = ['*']
 SUIT_CONFIG = {
     # header
     'ADMIN_NAME': 'Baker Street',
+}
+
+
+# Django REST Framework
+# http://www.django-rest-framework.org/api-guide/settings
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
 }
