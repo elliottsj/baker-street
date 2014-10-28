@@ -63,7 +63,7 @@ if 'DATABASE_URL' not in os.environ:
     raise Exception("""
     You must add a DATABASE_URL environment variable.
     e.g.
-        export DATABASE_URL="postgres://postgres@localhost/[YOUR_DATABASE_NAME]"
+        export DATABASE_URL="postgres://localhost/[YOUR_DATABASE_NAME]"
     """)
 
 import dj_database_url
