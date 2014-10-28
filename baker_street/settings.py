@@ -60,7 +60,11 @@ WSGI_APPLICATION = 'baker_street.wsgi.application'
 
 # Parse database configuration from $DATABASE_URL
 if 'DATABASE_URL' not in os.environ:
-    raise Exception('You must add a DATABASE_URL environment variable')
+    raise Exception("""
+    You must add a DATABASE_URL environment variable.
+    e.g.
+        export DATABASE_URL="postgres://postgres@localhost/[YOUR_DATABASE_NAME]"
+    """)
 
 import dj_database_url
 DATABASES = {
