@@ -13,4 +13,3 @@ python-dateutil==2.2
 python-mimeparse==0.1.4
 six==1.8.0
 static3==0.5.1
-pycanlii=0.9
