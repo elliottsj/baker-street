@@ -90,6 +90,7 @@ USE_TZ = True
 # https://devcenter.heroku.com/articles/django-assets
 
 # Static asset configuration
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Simplified static file serving.
