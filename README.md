@@ -15,6 +15,6 @@ have been accessed by each user.
 - [Django REST Framework](http://www.django-rest-framework.org/)
 - [Django Suit](http://djangosuit.com/)
 - [pycanlii](https://github.com/sherlocke/pycanlii)
-- [pywatson]()
+- [pywatson](https://github.com/sherlocke/pywatson)
 
 
