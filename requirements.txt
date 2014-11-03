@@ -9,7 +9,7 @@ enum34==1.0.3
 gunicorn==19.1.1
 inflection==0.2.1
 psycopg2==2.5.4
-pycanlii==0.9
+pycanlii==1.0.0b1
 pywatson==0.1.0a2
 requests==2.4.3
 whitenoise==1.0.3
