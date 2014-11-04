@@ -5,7 +5,7 @@ from rest_framework import serializers
 class DocumentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Document
-        fields = ('title', '')
+        fields = ('title', 'url', 'pinned')
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
@@ -77,5 +77,5 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('page_url', 'title', 'content', 'website', 'pinned')
+        fields = ('page_url', 'title', 'content', 'website')
 
