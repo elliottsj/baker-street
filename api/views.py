@@ -20,7 +20,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionSerializer
 
 
-class UserViewSet(viewsets.GenericViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """API endpoint for user """
     queryset = auth.get_user_model().objects.all()
     serializer_class = UserSerializer
