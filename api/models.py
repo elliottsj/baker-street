@@ -99,7 +99,7 @@ class Evidence(models.Model):
 class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    name = models.TextField(default="")
+    name = models.CharField(max_length=255)
 
 
 

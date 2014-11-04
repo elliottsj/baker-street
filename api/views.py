@@ -54,9 +54,17 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, format=None):
-        session = request.user.researchsession_set.create()
-        serializer = ResearchSessionSerializer(session)
-        return Response(serializer.data)
+        serializer = ResearchSessionSerializer(data=request.DATA)
+        if (serializer.is_valid()):
+            m = request.user.researchsession_set.create()
+            m.name = request.DATA['name']
+            m.save()
+            serializer = ResearchSessionSerializer(m, data=request.DATA)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        #session = request.user.researchsession_set.create(request.DATA)
+        #serializer = ResearchSessionSerializer(session)
+        #return Response(serializer.data)
 
     @detail_route(methods=["GET"])
     def documents(self, request, pk=None):
