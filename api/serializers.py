@@ -32,4 +32,4 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     website = serializers.Field(required=False)
     class Meta:
         mode = Page
-        fields = ('url', 'title', 'content', 'False')
+        fields = ('url', 'title', 'content', 'website')

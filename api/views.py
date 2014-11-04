@@ -4,7 +4,7 @@ from django.contrib import auth
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
 
@@ -48,5 +48,5 @@ class UserViewSet(viewsets.ModelViewSet):
 class PageViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])
-    def newest_page(self, request, format=None):
+    def new_page(self, request, format=None):
         pass
