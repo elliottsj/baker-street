@@ -6,6 +6,7 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
 router.register(r'documents', views.DocumentViewSet)
 router.register(r'questions', views.QuestionViewSet)
+router.register(r'pages', views.PageViewSet)
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),

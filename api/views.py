@@ -1,5 +1,5 @@
-from api.models import Document, Question
-from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer
+from api.models import Document, Question, Page
+from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer
 from django.contrib import auth
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
@@ -46,6 +46,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class PageViewSet(viewsets.ModelViewSet):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
 
     @detail_route(methods=['post'])
     def new_page(self, request, format=None):

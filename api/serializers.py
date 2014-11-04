@@ -28,8 +28,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'groups', 'is_active', 'last_login', 'date_joined')
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
-    content = serializers.Field(required=False)
-    website = serializers.Field(required=False)
+    content = serializers.CharField(required=False)
     class Meta:
-        mode = Page
+        model = Page
         fields = ('url', 'title', 'content', 'website')
