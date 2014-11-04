@@ -37,6 +37,13 @@ class ResearchSession(models.Model):
 
     user = models.ForeignKey(User)
 
+    def generate_relevant_documents(self):
+        """Generate and save a set of Documents relevant to this research session
+
+        :return: The generated set of Documents
+        """
+        pass
+
 
 class Page(models.Model):
     """A web page viewed in a ResearchSession."""
