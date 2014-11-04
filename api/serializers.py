@@ -68,4 +68,4 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('page_url', 'title', 'content', 'website', 'research_session')
+        fields = ('page_url', 'title', 'content', 'website', 'pinned')
