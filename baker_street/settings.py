@@ -143,3 +143,7 @@ REST_FRAMEWORK = {
     ),
     'PAGINATE_BY': 10,
 }
+
+
+# Custom user model
+AUTH_USER_MODEL = 'api.User'

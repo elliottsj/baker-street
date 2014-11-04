@@ -16,5 +16,3 @@ have been accessed by each user.
 - [Django Suit](http://djangosuit.com/)
 - [pycanlii](https://github.com/sherlocke/pycanlii)
 - [pywatson](https://github.com/sherlocke/pywatson)
-
-
