@@ -46,17 +46,22 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
     queryset = ResearchSession.objects.all()
-    serializer_class = ResearchSession
+    serializer_class = ResearchSessionSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
-    @detail_route(methods=['POST'])
-    def new_session(self, request, format=None):
+    def create(self, request, format=None):
+        session = request.user.researchsession_set.create()
+        serializer = ResearchSessionSerializer(session)
+        return Response(serializer.data)
 
-
+    @detail_route(methods='GET')
+    def pages(self, request, format=None):
+        pass
 
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
-    @detail_route(methods=['POST'])
-    def new_page(self, request, format=None):
+    def create(self, request, format=None):
         serializer = PageSerializer(request.DATA)
