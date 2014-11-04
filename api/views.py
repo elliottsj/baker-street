@@ -10,16 +10,16 @@ from rest_framework import generics
 from rest_framework.response import Response
 
 
-class DocumentViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows documents to be viewed or edited"""
-    queryset = Document.objects.all()
-    serializer_class = DocumentSerializer
-
-
-class QuestionViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows groups to be viewed or edited"""
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+# class DocumentViewSet(viewsets.ModelViewSet):
+#     """API endpoint that allows documents to be viewed or edited"""
+#     queryset = Document.objects.all()
+#     serializer_class = DocumentSerializer
+#
+#
+# class QuestionViewSet(viewsets.ModelViewSet):
+#     """API endpoint that allows groups to be viewed or edited"""
+#     queryset = Question.objects.all()
+#     serializer_class = QuestionSerializer
 
 
 class AuthViewSet(viewsets.ModelViewSet):
