@@ -47,6 +47,5 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class PageViewSet(viewsets.ModelViewSet):
 
-
     def newest_page(self, request format=None):
         pass
