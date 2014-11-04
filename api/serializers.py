@@ -22,8 +22,46 @@ class ResearchSessionSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = auth.get_user_model()
-        fields = ('username', 'first_name', 'last_name', 'email',
-                  'groups', 'is_active', 'last_login', 'date_joined')
+        fields = ('first_name', 'last_name', 'email', 'password', 'groups',
+                  'is_active', 'last_login', 'date_joined')
+        write_only_fields = ('password',)
+
+
+class AuthTokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            user = auth.authenticate(email=email, password=password)
+
+            if user:
+                if not user.is_active:
+                    msg = 'User account is disabled.'
+                    raise serializers.ValidationError(msg)
+                attrs['user'] = user
+                return attrs
+            else:
+                msg = 'Unable to log in with provided credentials.'
+                raise serializers.ValidationError(msg)
+        else:
+            msg = 'Must include "email" and "password"'
+            raise serializers.ValidationError(msg)
+
+
+class AuthSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=128, write_only=True)
+    user = UserSerializer(read_only=True)
+    token = AuthTokenSerializer(read_only=True)
+
+    # def restore_object(self, attrs, instance=None):
+    #     return {
+    #
+    #     }
 
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):
