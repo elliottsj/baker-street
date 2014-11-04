@@ -17,6 +17,7 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 class ResearchSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResearchSession
+        fields = ('name',)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

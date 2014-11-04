@@ -99,13 +99,8 @@ class Evidence(models.Model):
 class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    name = models.TextField(default="")
 
-    def generate_relevant_documents(self):
-        """Generate and save a set of Documents relevant to this research session
-
-        :return: The generated set of Documents
-        """
-        pass
 
 
 class Page(models.Model):
