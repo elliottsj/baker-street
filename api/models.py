@@ -72,6 +72,8 @@ class Document(models.Model):
     """A document in the corpus."""
     title = models.CharField(max_length=255)
     publish_date = models.DateField(null=True)
+    url = models.CharField(max_length=255)
+    pinned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -109,7 +111,6 @@ class Page(models.Model):
     title = models.TextField()
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
-    pinned = models.BooleanField(default=False)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     document = models.OneToOneField(Document)

@@ -5,7 +5,7 @@ from rest_framework import serializers
 class DocumentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Document
-        fields = ('title', 'publish_date')
+        fields = ('title', '')
 
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):

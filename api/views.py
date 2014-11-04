@@ -54,6 +54,10 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, format=None):
+        """
+        POST /research_session handler
+        Gets a new research session and returns it
+        """
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
             m = request.user.researchsession_set.create()
@@ -62,24 +66,15 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
             serializer = ResearchSessionSerializer(m, data=request.DATA)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        #session = request.user.researchsession_set.create(request.DATA)
-        #serializer = ResearchSessionSerializer(session)
-        #return Response(serializer.data)
 
     @detail_route(methods=["GET"])
     def documents(self, request, pk=None):
-        #page_num = request.QUERY_PARAMS["page"]
-        #page = Page.objects.get(pk=page_num)
-
         canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
         dbs = canlii.case_databases()
         db = dbs[0]
         s = []
-        for x in range(20):
+        for x in range(8):
             s.append(CanLIIDocument(db[x]).json())
-
-
-
         return JsonResponse(s, safe=False)
 
 
