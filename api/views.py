@@ -1,6 +1,6 @@
 from api.models import Document, Question
 from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer
-from django.contrib.auth.models import User
+from django.contrib import auth
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -22,7 +22,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.GenericViewSet):
     """API endpoint for user """
-    queryset = User.objects.all()
+    queryset = auth.get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -30,7 +30,6 @@ class UserViewSet(viewsets.GenericViewSet):
     @list_route(methods=['POST'])
     def sign_in(self, request, format=None):
         token, created = Token.objects.get_or_create(user=request.user)
-        ObtainAuthToken
         return Response({
             'user': request.user
         })
