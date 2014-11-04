@@ -56,7 +56,7 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods='GET')
     def pages(self, request, format=None):
-        pass
+        ResearchSession[request.]
 
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
