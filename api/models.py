@@ -67,6 +67,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
+class ResearchSession(models.Model):
+    """A sequence of pinned Pages and prioritized Contexts"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    name = models.CharField(max_length=255)
 
 class Document(models.Model):
     """A document in the corpus."""
@@ -74,6 +78,7 @@ class Document(models.Model):
     publish_date = models.DateField(null=True)
     url = models.CharField(max_length=255)
     pinned = models.BooleanField(default=False)
+    session = models.ForeignKey(ResearchSession)
 
     def __str__(self):
         return self.title
@@ -96,14 +101,6 @@ class Evidence(models.Model):
     docno = models.CharField(max_length=255)
     corpus_plus_docno = models.CharField(max_length=255)
     file_name = models.CharField(max_length=255)
-
-
-class ResearchSession(models.Model):
-    """A sequence of pinned Pages and prioritized Contexts"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    name = models.CharField(max_length=255)
-
-
 
 class Page(models.Model):
     """A web page viewed in a ResearchSession."""
