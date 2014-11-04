@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'api',
     'dashboard',
     'rest_framework',
+    'rest_framework.authtoken',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -136,5 +137,9 @@ SUIT_CONFIG = {
 # http://www.django-rest-framework.org/api-guide/settings
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'PAGINATE_BY': 10,
 }
