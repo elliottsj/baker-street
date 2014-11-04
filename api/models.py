@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django_enumfield import enum
+from api.enums import Website
 
 
 class UserManager(BaseUserManager):
@@ -113,6 +115,7 @@ class Page(models.Model):
     url = models.TextField()
     title = models.TextField()
     content = models.TextField(blank=True)
+    website = enum.EnumField(Website, default=Website.NONE)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     document = models.OneToOneField(Document)

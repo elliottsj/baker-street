@@ -46,5 +46,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class PageViewSet(viewsets.ModelViewSet):
+
+    @detail_route(methods=['post'])
     def newest_page(self, request, format=None):
         pass

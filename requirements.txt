@@ -13,3 +13,4 @@ pycanlii==1.0.0b1
 pywatson==0.1.0a2
 requests==2.4.3
 whitenoise==1.0.3
+django-enumfield=1.1.1
