@@ -3,16 +3,6 @@ from django.db import models
 import pywatson.answer.evidence
 
 
-class Page(models.Model):
-    """A web page viewed in a ResearchSession."""
-    url = models.TextField()
-    title = models.TextField()
-    content = models.TextField()
-
-    user = models.ForeignKey(User)
-    document = models.OneToOneField(Document)
-
-
 class Document(models.Model):
     """A document in the corpus."""
     title = models.CharField(max_length=255)
@@ -40,6 +30,30 @@ class Evidence(models.Model):
     corpus_plus_docno = models.CharField(max_length=255)
     file_name = models.CharField(max_length=255)
 
+
+class ResearchSession(models.Model):
+    """A sequence of pinned Pages and prioritized Contexts"""
+    name = models.CharField(max_length=255)
+
+    user = models.ForeignKey(User)
+
+
+class Page(models.Model):
+    """A web page viewed in a ResearchSession."""
+    url = models.TextField()
+    title = models.TextField()
+    content = models.TextField()
+
+    user = models.ForeignKey(User)
+    document = models.OneToOneField(Document)
+    research_session = models.ForeignKey(ResearchSession)
+
+
+class Context(models.Model):
+    """Key words/strings used to prioritize documents in ResearchSessions."""
+    value = models.TextField()
+
+    research_session = models.ForeignKey(ResearchSession)
 
 
 class Question(models.Model):
