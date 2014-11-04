@@ -69,3 +69,4 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Page
         fields = ('page_url', 'title', 'content', 'website', 'pinned')
+

@@ -8,6 +8,9 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import list_route, detail_route
 from rest_framework import generics
 from rest_framework.response import Response
+from pycanlii.canlii import CanLII
+from api.scooby_doo.canlii_document import CanLIIDocument
+from django.http import JsonResponse
 
 
 # class DocumentViewSet(viewsets.ModelViewSet):
@@ -57,8 +60,19 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=["GET"])
     def documents(self, request, pk=None):
-        page_num = request.QUERY_PARAMS["page"]
-        page = Page.objects.get(pk=page_num)
+        #page_num = request.QUERY_PARAMS["page"]
+        #page = Page.objects.get(pk=page_num)
+
+        canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
+        dbs = canlii.case_databases()
+        db = dbs[0]
+        s = []
+        for x in range(20):
+            s.append(CanLIIDocument(db[x]).json())
+
+
+
+        return JsonResponse(s, safe=False)
 
 
     @detail_route(methods=['POST'])
