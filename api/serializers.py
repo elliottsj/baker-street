@@ -15,7 +15,7 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('question_text', 'document')
 
 
-class ResearchSessionSerializer(serializers.HyperlinkedModelSerializer):
+class ResearchSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResearchSession
         fields = ('question_text', 'document')
@@ -31,4 +31,4 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('url', 'title', 'content', 'website')
+        fields = ('page_url', 'title', 'content', 'website', 'research_session')

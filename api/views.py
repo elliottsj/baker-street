@@ -1,5 +1,5 @@
-from api.models import Document, Question, Page
-from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer
+from api.models import Document, Question, Page, ResearchSession
+from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, ResearchSessionSerializer
 from django.contrib import auth
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
@@ -44,11 +44,19 @@ class UserViewSet(viewsets.ModelViewSet):
     def sign_out(self, request, format=None):
         pass
 
+class ResearchSessionViewSet(viewsets.ModelViewSet):
+    queryset = ResearchSession.objects.all()
+    serializer_class = ResearchSession
+
+    @detail_route(methods=['POST'])
+    def new_session(self, request, format=None):
+
+
 
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=['POST'])
     def new_page(self, request, format=None):
-        pass
+        serializer = PageSerializer(request.DATA)

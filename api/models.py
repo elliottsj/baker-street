@@ -98,8 +98,6 @@ class Evidence(models.Model):
 
 class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
-    name = models.CharField(max_length=255)
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def generate_relevant_documents(self):
@@ -112,7 +110,7 @@ class ResearchSession(models.Model):
 
 class Page(models.Model):
     """A web page viewed in a ResearchSession."""
-    url = models.TextField()
+    page_url = models.TextField()
     title = models.TextField()
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
