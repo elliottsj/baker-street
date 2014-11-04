@@ -60,8 +60,13 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         post_num = request.QUERY_PARAMS["post"]
 
     @detail_route(methods=['GET', 'POST'])
-    def pages(self, request, format=None):
+    def pages(self, request, format=None, pk=None):
         if request.method == "GET":
             pass
         elif request.method == "POST":
+            session = ResearchSession.objects.get(pk=pk)
+            page = PageSerializer(data=request.DATA)
+            session.page_set.add(page)
+            page.save()
+            return Response(page.data, status=status.HTTP_201_CREATED)
 
