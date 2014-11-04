@@ -55,7 +55,13 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         serializer = ResearchSessionSerializer(session)
         return Response(serializer.data)
 
-    @detail_route(methods='GET')
-    def pages(self, request, format=None):
-        pass
+    @detail_route(methods=["GET"])
+    def documents(self, request, pk=None):
+        post_num = request.QUERY_PARAMS["post"]
 
+    @detail_route(methods=['GET', 'POST'])
+    def pages(self, request, format=None):
+        if request.method == "GET":
+            pass
+        elif request.method == "POST":
+            pass
