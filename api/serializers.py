@@ -1,4 +1,4 @@
-from api.models import Document, Question, ResearchSession
+from api.models import Document, Question, ResearchSession, Page
 from django.contrib import auth
 from rest_framework import serializers
 
@@ -26,3 +26,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = auth.get_user_model()
         fields = ('username', 'first_name', 'last_name', 'email',
                   'groups', 'is_active', 'last_login', 'date_joined')
+
+class PageSerializer(serializers.HyperlinkedModelSerializer):
+    content = serializers.Field(required=False)
+    class Meta:
+        mode = Page
+        fields = ('url', 'title', 'content')

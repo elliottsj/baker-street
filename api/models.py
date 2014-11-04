@@ -112,7 +112,7 @@ class Page(models.Model):
     """A web page viewed in a ResearchSession."""
     url = models.TextField()
     title = models.TextField()
-    content = models.TextField()
+    content = models.TextField(blank=True)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     document = models.OneToOneField(Document)

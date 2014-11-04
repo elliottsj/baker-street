@@ -43,3 +43,10 @@ class UserViewSet(viewsets.ModelViewSet):
     @list_route(methods=['DELETE'])
     def sign_out(self, request, format=None):
         pass
+
+
+class PageViewSet(viewsets.ModelViewSet):
+
+
+    def newest_page(self, request format=None):
+        pass
