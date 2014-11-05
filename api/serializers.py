@@ -2,13 +2,13 @@ from api.models import Document, Question, ResearchSession, Page
 from django.contrib import auth
 from rest_framework import serializers
 
-class DocumentSerializer(serializers.HyperlinkedModelSerializer):
+class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = ('title', 'url', 'pinned')
 
 
-class QuestionSerializer(serializers.HyperlinkedModelSerializer):
+class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ('question_text', 'document')
@@ -28,7 +28,7 @@ class ResearchSessionSerializer(serializers.ModelSerializer):
 
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = auth.get_user_model()
         fields = ('first_name', 'last_name', 'email', 'password', 'groups',
