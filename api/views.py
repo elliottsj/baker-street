@@ -57,7 +57,7 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         POST /research_session handler
         Gets a new research session and returns it
         """
-        if 'id' in request.PARAMS:
+        if 'id' in request.QUERY_PARAMS:
             m = request.user.setCurrentSession(request.PARAMS['id'])
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
