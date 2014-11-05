@@ -1,5 +1,5 @@
 from api.models import Document, Question, Page
-from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, AuthSerializer
+from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, \
     AuthTokenSerializer
 from django.contrib import auth
 from rest_framework import mixins, renderers, permissions, views, viewsets, status
@@ -52,4 +52,4 @@ class PageViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])
     def new_page(self, request, format=None):
-    pass
+        pass
