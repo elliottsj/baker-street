@@ -6,3 +6,4 @@ class CanLIIDocument:
 
     def json(self):
         return { "title" : self.title, "url" : self.url}
+
