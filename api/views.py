@@ -99,6 +99,8 @@ class PageViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, format=None):
-        session = ResearchSession.objects.get(id=request.user['id'])
-        m = session.page_set.create()
-        serializer = ResearchSessionSerializer
+        serializer = PageSerializer(data=request.DATA)
+        session = request.user.current_session
+        m = session.page_set.create(title=request.DATA["title"], page_url = request.DATA["page_url"])
+        serializer = PageSerializer(m)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

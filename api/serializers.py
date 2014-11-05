@@ -73,9 +73,9 @@ class AuthSerializer(serializers.Serializer):
     #     }
 
 
-class PageSerializer(serializers.HyperlinkedModelSerializer):
+class PageSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('page_url', 'title', 'content', 'website')
+        fields = ('page_url', 'title', 'content')
 

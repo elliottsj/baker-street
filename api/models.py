@@ -125,8 +125,6 @@ class Page(models.Model):
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    document = models.OneToOneField(Document)
     research_session = models.ForeignKey(ResearchSession)
 
 
