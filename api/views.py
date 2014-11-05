@@ -18,7 +18,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
-    def list(self, request):
+    def list(self, request, format=None):
         canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
         dbs = canlii.case_databases()
         db = dbs[0]
@@ -28,7 +28,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return JsonResponse(s, safe=False)
 
     @list_route(methods=["GET"])
-    def pinned(self, request):
+    def pinned(self, request, format=None):
         documents = Document.objects.filter(pinned=True, session=request.user.current_session)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -90,7 +90,7 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=["GET"])
-    def current(self, request):
+    def current(self, request, format=None):
         m = request.user.current_session
         serializer = ResearchSessionSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -119,7 +119,7 @@ class PageViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @list_route(methods=["GET"])
-    def current(self, request):
+    def current(self, request, format=None):
         """
         This returns the current page according to the db, which is also the current page you're viewing
         This route is pointless, I have no clue why I made it.
