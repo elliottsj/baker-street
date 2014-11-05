@@ -47,7 +47,7 @@ def get_documents(t):
 
     return l
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     #evidence = h("G. (Re), 2010 CanLII 5993 (ON CCB)")
     objs = get_documents("G. (Re), 2010 CanLII 5993 (ON CCB)")
     x = [x.title for x in objs]
