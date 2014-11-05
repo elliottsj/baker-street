@@ -18,7 +18,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
-
 # class QuestionViewSet(viewsets.ModelViewSet):
 #     """API endpoint that allows groups to be viewed or edited"""
 #     queryset = Question.objects.all()
