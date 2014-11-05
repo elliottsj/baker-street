@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from api.models import Document, Question, Page, ResearchSession
 from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, \
     AuthTokenSerializer, ResearchSessionSerializer
@@ -23,12 +24,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
 #     queryset = Question.objects.all()
 #     serializer_class = QuestionSerializer
 
-
 class AuthViewSet(viewsets.ModelViewSet):
     queryset = auth.get_user_model().objects.all()
     serializer_class = AuthTokenSerializer
 
     # POST /users/sign_in.json
+    @csrf_exempt
     @list_route(methods=['POST'])
     def sign_in(self, request, format=None):
         serializer = self.serializer_class(data=request.DATA)
