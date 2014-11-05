@@ -19,13 +19,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
 
     def list(self, request, format=None):
-        canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
-        dbs = canlii.case_databases()
-        db = dbs[0]
-        s = []
-        for x in range(8):
-            s.append(CanLIIDocument(db[x]).json())
-        return JsonResponse(s, safe=False)
+        session = request.user.current_session
+        page = session.current_page
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
@@ -113,7 +108,7 @@ class PageViewSet(viewsets.ModelViewSet):
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            m = session.page_set.create(title=request.DATA["title"], page_url = request.DATA["page_url"])
+            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"])
             m = session.setCurrentPage(m)
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
