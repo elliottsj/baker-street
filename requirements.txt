@@ -13,4 +13,5 @@ psycopg2==2.5.4
 pycanlii==1.0.0b1
 pywatson==0.1.0a2
 requests==2.4.3
+six==1.8.0
 whitenoise==1.0.3
