@@ -48,6 +48,7 @@ class AuthViewSet(viewsets.ModelViewSet):
         pass
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
+    model = ResearchSession
     serializer_class = ResearchSessionSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
