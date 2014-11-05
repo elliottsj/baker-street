@@ -17,8 +17,8 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 class ResearchSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResearchSession
-        fields = ('name', 'id')
-        read_only_fields = ('id',)
+        fields = ('name', 'id', 'current')
+        read_only_fields = ('id', 'current')
 
     def restore_object(self, attrs, instance=None):
         if instance is not None:

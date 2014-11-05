@@ -57,12 +57,18 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         POST /research_session handler
         Gets a new research session and returns it
         """
+        if 'id' in request.PARAMS:
+            m = request.user.setCurrentSession(request.PARAMS['id'])
+            serializer = ResearchSessionSerializer(m)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
             m = request.user.researchsession_set.create()
             m.name = request.DATA['name']
             m.save()
-            serializer = ResearchSessionSerializer(m, data=request.DATA)
+            m = request.user.setCurrentSession(m.id)
+            serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -80,9 +86,19 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['POST'])
     def pages(self, request, format=None, pk=None):
         if request.method == "POST":
-            session = ResearchSession.objects.get(pk=pk)
+            session = ResearchSession.objects.get(id=pk)
             page = PageSerializer(data=request.DATA)
             session.page_set.add(page)
             page.save()
             return Response(page.data, status=status.HTTP_201_CREATED)
 
+
+class PageViewSet(viewsets.ModelViewSet):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, format=None):
+        session = ResearchSession.objects.get(id=request.user['id'])
+        m = session.page_set.create()
+        serializer = ResearchSessionSerializer

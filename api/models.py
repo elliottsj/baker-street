@@ -28,8 +28,7 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         return self._create_user(email, password, True, True,
-                                 **extra_fields)
-
+                              **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name='first name', max_length=30, blank=True)
@@ -42,9 +41,25 @@ class User(AbstractBaseUser, PermissionsMixin):
                   'active. Unselect this instead of deleting accounts.')
     date_joined = models.DateTimeField(verbose_name='date joined', default=timezone.now)
 
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def setCurrentSession(self, new_id):
+        old = ResearchSession.objects.filter(user=self, current=True)
+        if (len(old) == 1):
+            old[0].current = False
+            old[0].save()
+        new = ResearchSession.objects.filter(id=new_id)
+        new = new[0]
+        new.current = True
+        new.save()
+        return new
+
+    @property
+    def current_session(self):
+        return ResearchSession.objects.filter(user=self, current=True)[0]
 
     def get_full_name(self):
         """
@@ -71,6 +86,7 @@ class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=255)
+    current = models.BooleanField(default=False)
 
 class Document(models.Model):
     """A document in the corpus."""
@@ -105,7 +121,7 @@ class Evidence(models.Model):
 class Page(models.Model):
     """A web page viewed in a ResearchSession."""
     page_url = models.TextField()
-    title = models.TextField()
+    title = models.TextField(blank=True)
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
 
