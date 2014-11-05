@@ -120,5 +120,7 @@ class PageViewSet(viewsets.ModelViewSet):
         This route is pointless, I have no clue why I made it.
         """
         m = request.user.current_session.current_page
+        if (not m):
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PageSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
