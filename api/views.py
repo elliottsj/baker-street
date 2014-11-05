@@ -48,9 +48,11 @@ class AuthViewSet(viewsets.ModelViewSet):
         pass
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
-    queryset = ResearchSession.objects.all()
     serializer_class = ResearchSessionSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return ResearchSession.objects.filter(user=self.request.user)
 
     def create(self, request, format=None):
         """
