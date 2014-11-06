@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from pycanlii.canlii import CanLII
 from api.scooby_doo.canlii_document import CanLIIDocument
 from django.http import JsonResponse
+from api.scooby_doo.watson_helpers import get_documents
 
 class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
@@ -21,6 +22,13 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def list(self, request, format=None):
         session = request.user.current_session
         page = session.current_page
+        documents = get_documents(page.title)
+        ms = []
+        for d in documents:
+            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False))
+        serializer = DocumentSerializer(ms, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
