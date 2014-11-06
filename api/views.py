@@ -29,7 +29,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=["GET"])
     def pinned(self, request):
-        documents = Document.objects.filter(pinned=True)
+        documents = Document.objects.filter(pinned=True, session=request.user.current_session)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
