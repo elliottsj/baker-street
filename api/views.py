@@ -91,9 +91,12 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
 
 
 class PageViewSet(viewsets.ModelViewSet):
-    queryset = Page.objects.all()
+    model = Page
     serializer_class = PageSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Page.objects.filter(research_session=self.request.user.current_session)
 
     def create(self, request, format=None):
         #serializer = PageSerializer(data=request.DATA)
