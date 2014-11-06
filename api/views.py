@@ -18,6 +18,15 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
+    def list(self, request):
+        canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
+        dbs = canlii.case_databases()
+        db = dbs[0]
+        s = []
+        for x in range(8):
+            s.append(CanLIIDocument(db[x]).json())
+        return JsonResponse(s, safe=False)
+
 # class QuestionViewSet(viewsets.ModelViewSet):
 #     """API endpoint that allows groups to be viewed or edited"""
 #     queryset = Question.objects.all()
@@ -79,16 +88,6 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         m = request.user.current_session
         serializer = ResearchSessionSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @detail_route(methods=["GET"])
-    def documents(self, request, pk=None):
-        canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
-        dbs = canlii.case_databases()
-        db = dbs[0]
-        s = []
-        for x in range(8):
-            s.append(CanLIIDocument(db[x]).json())
-        return JsonResponse(s, safe=False)
 
 
 class PageViewSet(viewsets.ModelViewSet):
