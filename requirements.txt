@@ -2,6 +2,7 @@ Django==1.7.1
 Markdown==2.5.1
 beautifulsoup4==4.3.2
 dj-database-url==0.3.0
+django-cors-headers==0.13
 django-enumfield==1.1.1
 django-filter==0.8
 django-suit==0.2.11
