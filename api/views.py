@@ -97,8 +97,21 @@ class PageViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, format=None):
-        serializer = PageSerializer(data=request.DATA)
+        #serializer = PageSerializer(data=request.DATA)
         session = request.user.current_session
-        m = session.page_set.create(title=request.DATA["title"], page_url = request.DATA["page_url"])
+        m = Page.objects.filter(research_session=session, title=request.DATA["title"], page_url=request.DATA["page_url"])
+        if (len(m) == 1):
+            m = session.setCurrentPage(m[0])
+            serializer = PageSerializer(m)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            m = session.page_set.create(title=request.DATA["title"], page_url = request.DATA["page_url"])
+            m = session.setCurrentPage(m)
+            serializer = PageSerializer(m)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @list_route(methods=["GET"])
+    def current(self, request):
+        m = request.user.current_session.current_page
         serializer = PageSerializer(m)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)

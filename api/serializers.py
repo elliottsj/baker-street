@@ -77,5 +77,6 @@ class PageSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('page_url', 'title', 'content')
+        fields = ('page_url', 'title', 'content', 'most_recent')
+        read_only_fields = ('most_recent',)
 

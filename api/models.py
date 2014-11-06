@@ -88,6 +88,19 @@ class ResearchSession(models.Model):
     name = models.CharField(max_length=255)
     current = models.BooleanField(default=False)
 
+    def setCurrentPage(self, new):
+        old = Page.objects.filter(research_session=self, most_recent=True)
+        if (len(old) == 1):
+            old[0].most_recent = False
+            old[0].save()
+        new.most_recent = True
+        new.save()
+        return new
+
+    @property
+    def current_page(self):
+        return Page.objects.filter(research_session=self, most_recent=True)
+
 class Document(models.Model):
     """A document in the corpus."""
     title = models.CharField(max_length=255)
@@ -124,8 +137,10 @@ class Page(models.Model):
     title = models.TextField(blank=True)
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
+    most_recent = models.BooleanField(default=False)
 
     research_session = models.ForeignKey(ResearchSession)
+
 
 
 class Context(models.Model):
