@@ -74,6 +74,12 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @list_route(methods=["GET"])
+    def current(self, request):
+        m = request.user.current_session
+        serializer = ResearchSessionSerializer(m)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @detail_route(methods=["GET"])
     def documents(self, request, pk=None):
         canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
