@@ -27,6 +27,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
             s.append(CanLIIDocument(db[x]).json())
         return JsonResponse(s, safe=False)
 
+    @list_route(methods=["GET"])
+    def pinned(self, request):
+        documents = Document.objects.filter(pinned=True)
+        serializer = DocumentSerializer(documents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 # class QuestionViewSet(viewsets.ModelViewSet):
 #     """API endpoint that allows groups to be viewed or edited"""
 #     queryset = Question.objects.all()
