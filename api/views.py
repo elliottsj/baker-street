@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from pycanlii.canlii import CanLII
 from api.scooby_doo.canlii_document import CanLIIDocument
 from django.http import JsonResponse
+from api.scooby_doo.watson_helpers import get_documents
 
 class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
@@ -19,13 +20,15 @@ class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
 
     def list(self, request, format=None):
-        canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
-        dbs = canlii.case_databases()
-        db = dbs[0]
-        s = []
-        for x in range(8):
-            s.append(CanLIIDocument(db[x]).json())
-        return JsonResponse(s, safe=False)
+        session = request.user.current_session
+        page = session.current_page
+        documents = get_documents(page.title)
+        ms = []
+        for d in documents:
+            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False))
+        serializer = DocumentSerializer(ms, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
@@ -113,7 +116,7 @@ class PageViewSet(viewsets.ModelViewSet):
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            m = session.page_set.create(title=request.DATA["title"], page_url = request.DATA["page_url"])
+            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"])
             m = session.setCurrentPage(m)
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -125,5 +128,7 @@ class PageViewSet(viewsets.ModelViewSet):
         This route is pointless, I have no clue why I made it.
         """
         m = request.user.current_session.current_page
+        if (not m):
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PageSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
