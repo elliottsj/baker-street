@@ -91,16 +91,6 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         return JsonResponse(s, safe=False)
 
 
-    @detail_route(methods=['POST'])
-    def pages(self, request, format=None, pk=None):
-        if request.method == "POST":
-            session = ResearchSession.objects.get(id=pk)
-            page = PageSerializer(data=request.DATA)
-            session.page_set.add(page)
-            page.save()
-            return Response(page.data, status=status.HTTP_201_CREATED)
-
-
 class PageViewSet(viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
