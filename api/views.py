@@ -111,6 +111,10 @@ class PageViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=["GET"])
     def current(self, request):
+        """
+        This returns the current page according to the db, which is also the current page you're viewing
+        This route is pointless, I have no clue why I made it.
+        """
         m = request.user.current_session.current_page
         serializer = PageSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
