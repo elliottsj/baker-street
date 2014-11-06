@@ -6,6 +6,7 @@ from django_enumfield import enum
 from api.enums import Website
 
 
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         """
@@ -158,3 +159,9 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+class CanLIIDocument(models.Model):
+    title = models.CharField(max_length=255)
+    documentId = models.CharField(max_length=64)
+    databaseId = models.CharField(max_length=64)
+    url = models.CharField(max_length=64)
+    content = models.TextField()
