@@ -99,7 +99,7 @@ class ResearchSession(models.Model):
 
     @property
     def current_page(self):
-        return Page.objects.filter(research_session=self, most_recent=True)
+        return Page.objects.filter(research_session=self, most_recent=True)[0]
 
 class Document(models.Model):
     """A document in the corpus."""
