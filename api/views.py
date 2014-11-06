@@ -29,7 +29,6 @@ class AuthViewSet(viewsets.ModelViewSet):
 
     # POST /users/sign_in.json
     @list_route(methods=['POST'])
-    @ensure_csrf_cookie
     def sign_in(self, request, format=None):
         serializer = self.serializer_class(data=request.DATA)
         if serializer.is_valid():
