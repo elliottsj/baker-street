@@ -29,6 +29,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
         serializer = DocumentSerializer(ms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def create(self, request, format=None):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
