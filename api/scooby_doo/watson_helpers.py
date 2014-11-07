@@ -15,7 +15,7 @@ def f(text):
     return answer
 
 def g(title):
-    canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
+    canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
     r = canlii.search(title, 1, 0)
     if len(r) != 1:
         return
@@ -33,7 +33,7 @@ def h(t):
 
 def get_documents(t):
     evidence = h(t)
-    canlii = CanLII("5tt8fdbp4s5jqjsj7arvfgbj")
+    canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
     l = []
     for e in evidence:
         try:
