@@ -165,12 +165,12 @@ class Question(models.Model):
         return self.question_text
 
 class CanLIIDocument(models.Model):
+    watson_title = models.TextField()
     title = models.TextField()
     documentId = models.CharField(max_length=64)
     databaseId = models.CharField(max_length=64)
     url = models.CharField(max_length=64)
     content = models.TextField()
-
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
 
     @staticmethod
@@ -180,25 +180,21 @@ class CanLIIDocument(models.Model):
         it probably won't become a serious issue for months down the road. GL who deals with this, probably me.
         Jonathan 11/11/14
         """
-        entries = CanLIIDocument.objects.filter(title__startswith=title)
+        entries = CanLIIDocument.objects.filter(watson_title=title)
         if (len(entries)> 1):
             logging.warning("There were more than 1 result when searching the CanLII DB with title " + title)
             return entries[0]
-        elif (len(entries == 1)):
+        elif (len(entries) == 1):
             return entries[1]
         else:
-            try:
-                x = CanLIIDocument.canlii.search(title, 1, 0)
-            except requests.exceptions.HTTPError:
-                pass
-
+            x = CanLIIDocument.canlii.search(title, 1, 0)
             x = x[0]
 
             if type(x) == Case:
                 id = x.caseId
             else:
                 id = x.legislationId
-            m = CanLIIDocument.objects.create(title=x.title, documentId=id, databaseId=x.databaseId,
+            m = CanLIIDocument.objects.create(watson_title=title, title=x.title, documentId=id, databaseId=x.databaseId,
                                               url=x.url, content=x.content)
             m.save()
             return m
