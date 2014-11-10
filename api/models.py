@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django_enumfield import enum
 from api.enums import Website
+from pycanlii.canlii import CanLII
 
 
 
@@ -159,9 +160,13 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
-class CanLIIDocument(models.Model):
-    title = models.CharField(max_length=255)
+class CanLIIDocument(models.Model, CanLII):
+    title = models.TextField(max_length=255)
     documentId = models.CharField(max_length=64)
     databaseId = models.CharField(max_length=64)
     url = models.CharField(max_length=64)
     content = models.TextField()
+
+    @staticmethod
+    def search(title):
+        entries = CanLIIDocument.objects.filter(title__startswith=title)
