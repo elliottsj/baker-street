@@ -5,6 +5,10 @@ from django.utils import timezone
 from django_enumfield import enum
 from api.enums import Website
 from pycanlii.canlii import CanLII
+from pycanlii.case import Case
+from pycanlii.legislation import Legislation
+import logging
+import requests
 
 
 
@@ -160,13 +164,41 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
-class CanLIIDocument(models.Model, CanLII):
+class CanLIIDocument(models.Model):
     title = models.TextField()
     documentId = models.CharField(max_length=64)
     databaseId = models.CharField(max_length=64)
     url = models.CharField(max_length=64)
     content = models.TextField()
 
+    canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
+
     @staticmethod
     def search(title):
+        """
+        If somehow multiple results are returned, we're legit fucked. I have no clue how to solve this. On top of that
+        it probably won't become a serious issue for months down the road. GL who deals with this, probably me.
+        Jonathan 11/11/14
+        """
         entries = CanLIIDocument.objects.filter(title__startswith=title)
+        if (len(entries)> 1):
+            logging.warning("There were more than 1 result when searching the CanLII DB with title " + title)
+            return entries[0]
+        elif (len(entries == 1)):
+            return entries[1]
+        else:
+            try:
+                x = CanLIIDocument.canlii.search(title, 1, 0)
+            except requests.exceptions.HTTPError:
+                pass
+
+            x = x[0]
+
+            if type(x) == Case:
+                id = x.caseId
+            else:
+                id = x.legislationId
+            m = CanLIIDocument.objects.create(title=x.title, documentId=id, databaseId=x.databaseId,
+                                              url=x.url, content=x.content)
+            m.save()
+            return m
