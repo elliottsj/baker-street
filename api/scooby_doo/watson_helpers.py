@@ -1,3 +1,4 @@
+from api.models import CanLIIDocument
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
@@ -15,11 +16,7 @@ def f(text):
     return answer
 
 def g(title):
-    canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
-    r = canlii.search(title, 1, 0)
-    if len(r) != 1:
-        return
-    r = r[0]
+    r = CanLIIDocument.search(title)
     b = BeautifulSoup(r.content)
     text = b.get_text()
     return text
