@@ -165,36 +165,43 @@ class Question(models.Model):
         return self.question_text
 
 class CanLIIDocument(models.Model):
-    watson_title = models.TextField()
     title = models.TextField()
     documentId = models.CharField(max_length=64)
     databaseId = models.CharField(max_length=64)
-    url = models.CharField(max_length=64)
-    content = models.TextField()
+    type = models.IntegerField() # 0 is case, 1 is legislation
+    populated = models.BooleanField(default=False)
+    url = models.CharField(max_length=255, blank=True)
+    content = models.TextField(blank=True)
+
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
 
     @staticmethod
     def search(title):
-        """
-        If somehow multiple results are returned, we're legit fucked. I have no clue how to solve this. On top of that
-        it probably won't become a serious issue for months down the road. GL who deals with this, probably me.
-        Jonathan 11/11/14
-        """
-        entries = CanLIIDocument.objects.filter(watson_title=title)
-        if (len(entries)> 1):
-            logging.warning("There were more than 1 result when searching the CanLII DB with title " + title)
-            return entries[0]
-        elif (len(entries) == 1):
-            return entries[1]
-        else:
-            x = CanLIIDocument.canlii.search(title, 1, 0)
-            x = x[0]
+        models = CanLIIDocument.objects.filter(title=title)
 
-            if type(x) == Case:
-                id = x.caseId
-            else:
-                id = x.legislationId
-            m = CanLIIDocument.objects.create(watson_title=title, title=x.title, documentId=id, databaseId=x.databaseId,
-                                              url=x.url, content=x.content)
-            m.save()
-            return m
+        ## Attempt to coax out some documents
+        if len(models) == 0:
+            words = title.split()
+            while(len(models) == 0 and len(words) > 0):
+                words.pop()
+                s = words[0]
+                for i in range(1, len(words)):
+                    s+= ' ' + words[i]
+                models = CanLIIDocument.objects.filter(title=title)
+
+        # Say fuck it
+        if len(models) == 0:
+            return None
+
+        # Deal with too many results, probably by crying, hopefully with a fancy algorithm
+        # I'm envisioning something that compares based on words starting from the begining
+        if (len(models) > 1):
+            pass
+
+        model = models[0]
+        # this will require knowing if it's legislation or a case, should deal with this
+        if not model.populated:
+            # populate it
+            pass #remember to save when this is done
+
+        return model

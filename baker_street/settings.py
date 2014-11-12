@@ -152,3 +152,7 @@ AUTH_USER_MODEL = 'api.User'
 
 # Allow requests from any origin
 CORS_ORIGIN_ALLOW_ALL = True
+
+FIXTURE_DIRS = (
+   '/api/fixtures/',
+)

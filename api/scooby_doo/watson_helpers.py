@@ -68,33 +68,6 @@ def populate():
                                                      databaseId=legis.databaseId, populated=False)
 
 
-def search(title):
-    models = CanLIIDocument.objects.filter(title=title)
 
-    ## Attempt to coax out some documents
-    if (len(models) == 0):
-        words = title.split()
-        while(len(models) == 0 and len(words) > 0):
-            words.pop()
-            s = words[0]
-            for i in range(1, len(words)):
-                s+= ' ' + words[i]
-            models = CanLIIDocument.objects.filter(title=title)
-
-    # Say fuck it
-    if (len(models) == 0):
-        return None
-
-    # Deal with too many results, probably by crying, hopefully with a fancy algorithm
-    # I'm envisioning something that compares based on words starting from the begining
-    if (len(models) > 1):
-        pass
-
-    model = models[0]
-    # this will require knowing if it's legislation or a case, should deal with this
-    if not model.populated:
-        pass #remember to save when this is done
-
-    return model
 
 
