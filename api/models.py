@@ -177,7 +177,7 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
-        models = CanLIIDocument.objects.filter(title=title)
+        models = CanLIIDocument.objects.filter(title__startswith=title[0:len(title)//2])
 
         ## Attempt to coax out some documents
         if len(models) == 0:
@@ -201,7 +201,18 @@ class CanLIIDocument(models.Model):
         model = models[0]
         # this will require knowing if it's legislation or a case, should deal with this
         if not model.populated:
-            # populate it
-            pass #remember to save when this is done
+            if model.type == 0: # it's a case
+                input = { 'caseId' : { 'en' : model.documentId },
+                          'databaseId' : model.databaseId,
+                          'title' : model.title,
+                          'citation' : ''
+                          }
+                case = Case(input, "zxxdp6fyt5fatyfv44smrsbw")
+                model.content = case.content
+                model.url = case.url
+                model.populate = True
+            else: #it's legislation
+                pass
+            model.save
 
         return model
