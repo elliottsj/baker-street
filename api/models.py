@@ -177,17 +177,15 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
-        models = CanLIIDocument.objects.filter(title__startswith=title[0:len(title)//2])
+        models = CanLIIDocument.objects.filter(title__contains=title)
 
         ## Attempt to coax out some documents
         if len(models) == 0:
-            words = title.split()
-            while(len(models) == 0 and len(words) > 0):
-                words.pop()
-                s = words[0]
-                for i in range(1, len(words)):
-                    s+= ' ' + words[i]
-                models = CanLIIDocument.objects.filter(title=title)
+            i = len(title) - 1
+            while(len(models) == 0 and i > 1):
+                models = CanLIIDocument.objects.filter(title__contains=title[0:i])
+                i-=1
+
 
         # Say fuck it
         if len(models) == 0:
@@ -212,7 +210,16 @@ class CanLIIDocument(models.Model):
                 model.url = case.url
                 model.populate = True
             else: #it's legislation
-                pass
+                input = { 'legislationId' :  model.documentId ,
+                          'databaseId' : model.databaseId,
+                          'title' : model.title,
+                          'citation' : '',
+                          'type' : "REGULATION"
+                          }
+                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+                model.content = legis.content
+                model.url = legis.url
+                model.populate = True
             model.save
 
         return model

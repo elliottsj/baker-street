@@ -34,9 +34,8 @@ def get_documents(t):
     l = []
     for e in evidence:
         try:
-            x = canlii.search(e.title, 1, 0)
-            if len(x) == 1:
-                l.append(x[0])
+            x = CanLIIDocument.search(e.title)
+            l.append(x)
         except requests.exceptions.HTTPError:
             pass
 
