@@ -49,24 +49,3 @@ if __name__ == '__main__':
     x = [x.title for x in objs]
     print(x)
 
-
-### Make this a migration somehow
-def populate():
-    canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
-    case_dbs = canlii.case_databases()
-    legis_dbs = canlii.legislation_databases()
-
-    for db in case_dbs:
-        for case in db:
-            api.models.CanLIIDocument.objects.create(title=case.title, documentId=case.caseId,
-                                                     databaseId=case.databaseId, populated=False)
-
-    for db in legis_dbs:
-        for legis in db:
-            api.models.CanLIIDocument.objects.create(title=legis.title, documentId=legis.legislationId,
-                                                     databaseId=legis.databaseId, populated=False)
-
-
-
-
-
