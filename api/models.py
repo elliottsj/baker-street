@@ -7,6 +7,7 @@ from api.enums import Website
 from pycanlii.canlii import CanLII
 from pycanlii.case import Case
 from pycanlii.legislation import Legislation
+import random as r
 import logging
 import requests
 
@@ -196,9 +197,9 @@ class CanLIIDocument(models.Model):
         # Deal with too many results, probably by crying, hopefully with a fancy algorithm
         # I'm envisioning something that compares based on words starting from the begining
         if (len(models) > 1):
-            pass
-
-        model = models[0]
+            model = r.choice(models)
+        else:
+            model = models[0]
         # this will require knowing if it's legislation or a case, should deal with this
         if not model.populated:
             if model.type == 0: # it's a case
