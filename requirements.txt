@@ -16,3 +16,4 @@ pywatson==0.1.0a2
 requests==2.4.3
 six==1.8.0
 whitenoise==1.0.3
+nltk==3.0.0
