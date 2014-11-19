@@ -180,7 +180,7 @@ class CanLIIDocument(models.Model):
     def search(title):
         models = CanLIIDocument.objects.filter(title__contains=title)
 
-        ## Attempt to coax out some documents
+        # Attempt to coax out some documents
         if len(models) == 0:
             l = title.split(',')
             models = CanLIIDocument.objects.filter(title__contains=l[0])
@@ -188,6 +188,16 @@ class CanLIIDocument(models.Model):
             while(len(models) == 0 and i > 1):
                 models = CanLIIDocument.objects.filter(title__contains=title[0:i])
                 i//=2
+
+        # name = title
+        # if len(models) == 0:
+        #     l = title.split(',')
+        #     models = CanLIIDocument.objects.filter(title__contains=l[0])
+        #     pieces = name.split()
+        #     while (len(models) == 0 and len(pieces) > 0):
+        #         name = " ".join(pieces[0:-1])
+        #         models = CanLIIDocument.objects.filter(title__contains=name)
+        #         pieces = name.split()
 
 
         # Say fuck it
