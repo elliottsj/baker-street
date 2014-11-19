@@ -118,14 +118,21 @@ if __name__ == '__main__':
     # some testing
     w = relevent_words("https://www.canlii.org/en/on/onhrt/doc/2013/2013hrto718/2013hrto718.html?searchUrlHash=AAAAAQAKZW1wbG95bWVudAAAAAAB", True)
     phase = train(w, phase)
+    print(get_context(10))
+
     w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2005/2005canlii11562/2005canlii11562.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
     phase = train(w, phase)
-    w = relevent_words("https://www.canlii.org/en/on/onwsiat/doc/2010/2010onwsiat637/2010onwsiat637.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB",True) 
+    print(get_context(10))
+
+    w = relevent_words("https://www.canlii.org/en/on/onwsiat/doc/2010/2010onwsiat637/2010onwsiat637.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB",True)
     phase = train(w, phase)
+    print(get_context(10))
+
     w = relevent_words("https://www.canlii.org/en/on/onsc/doc/2012/2012onsc6387/2012onsc6387.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
     phase = train(w, phase)
+    print(get_context(10))
+
     w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2004/2004canlii14309/2004canlii14309.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
     phase = train(w, phase)
-
     print(get_context(10))
     
