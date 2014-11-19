@@ -35,12 +35,10 @@ def get_documents(t):
     for e in evidence:
         try:
             x = CanLIIDocument.search(e.title)
-            l.append(x)
+            if x != None:
+                l.append(x)
         except requests.exceptions.HTTPError:
             pass
-
-
-
     return l
 
 if __name__ == '__main__':

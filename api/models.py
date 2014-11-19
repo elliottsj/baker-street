@@ -181,10 +181,12 @@ class CanLIIDocument(models.Model):
 
         ## Attempt to coax out some documents
         if len(models) == 0:
+            l = title.split(',')
+            models = CanLIIDocument.objects.filter(title__contains=l[0])
             i = len(title) - 1
             while(len(models) == 0 and i > 1):
                 models = CanLIIDocument.objects.filter(title__contains=title[0:i])
-                i-=1
+                i//=2
 
 
         # Say fuck it
@@ -210,7 +212,7 @@ class CanLIIDocument(models.Model):
                 model.url = case.url
                 model.populate = True
             else: #it's legislation
-                input = { 'legislationId' :  model.documentId ,
+                input = { 'legislationId' :  model.documentId,
                           'databaseId' : model.databaseId,
                           'title' : model.title,
                           'citation' : '',
