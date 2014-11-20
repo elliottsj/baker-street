@@ -91,11 +91,16 @@ def train(words, phase):
             vector[i[0]] = vector[i[0]] + 1
 
     # fix vector every 5 iterations
+    items_rm = []
     if phase == 4:
         for item in vector.keys():
             if vector[item] < 5:
-                vector.pop(item)
+                items_rm.append(item)
         phase = 0
+
+    # remove items
+    for key in items_rm:
+        vector.pop(key)
     
     return phase + 1
 
@@ -111,7 +116,7 @@ def get_context(num):
 
 if __name__ == '__main__':
     # some testing
-    w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2001/2001canlii6145/2001canlii6145.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
+    w = relevent_words("https://www.canlii.org/en/on/onhrt/doc/2013/2013hrto718/2013hrto718.html?searchUrlHash=AAAAAQAKZW1wbG95bWVudAAAAAAB", True)
     phase = train(w, phase)
     w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2005/2005canlii11562/2005canlii11562.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
     phase = train(w, phase)
@@ -121,4 +126,6 @@ if __name__ == '__main__':
     phase = train(w, phase)
     w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2004/2004canlii14309/2004canlii14309.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
     phase = train(w, phase)
+
+    print(get_context(10))
     
