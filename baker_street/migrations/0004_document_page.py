@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='page',
-            field=models.ForeignKey(default=None, to='baker_street.Page'),
+            field=models.ForeignKey(default=1, to='baker_street.Page'),
             preserve_default=False,
         ),
     ]

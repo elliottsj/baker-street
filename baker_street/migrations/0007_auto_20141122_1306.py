@@ -7,14 +7,18 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('baker_street', '0003_vectorset'),
+        ('baker_street', '0006_merge'),
     ]
 
     operations = [
+        migrations.RemoveField(
+            model_name='document',
+            name='id',
+        ),
         migrations.AddField(
             model_name='document',
-            name='page',
-            field=models.ForeignKey(default=None, to='baker_street.Page'),
+            name='canlii',
+            field=models.OneToOneField(primary_key=True, to='baker_street.CanLIIDocument', serialize=False, default=0),
             preserve_default=False,
         ),
     ]

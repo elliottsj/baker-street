@@ -109,72 +109,6 @@ class ResearchSession(models.Model):
     def current_page(self):
         return Page.objects.get(research_session=self, most_recent=True)
 
-class Page(models.Model):
-    """A web page viewed in a ResearchSession."""
-    page_url = models.TextField()
-    title = models.TextField(blank=True)
-    content = models.TextField(blank=True)
-    website = enum.EnumField(Website, default=Website.NONE)
-    most_recent = models.BooleanField(default=False)
-    snippet = models.BooleanField(default=False)
-
-    research_session = models.ForeignKey(ResearchSession)
-
-class Document(models.Model):
-    """A document in the corpus."""
-    title = models.CharField(max_length=255)
-    publish_date = models.DateField(null=True)
-    url = models.CharField(max_length=255)
-    pinned = models.BooleanField(default=False)
-    content = models.TextField()
-    type = models.IntegerField()
-    source = models.CharField(max_length=255, default="CanLII")
-
-    session = models.ForeignKey(ResearchSession)
-    page = models.ForeignKey(Page)
-
-    def __str__(self):
-        return self.title
-
-
-class Evidence(models.Model):
-    # pywatson.answer.evidence.Evidence attributes
-    title = models.CharField(max_length=255)
-    copyright = models.CharField(max_length=255)
-    external_id = models.CharField(max_length=255)
-    terms_of_use = models.CharField(max_length=255)
-    document_path = models.CharField(max_length=255)
-    text = models.TextField()
-    confidence = models.FloatField()
-
-    # pywatson.answer.evidence.MetadataMap attributes
-    original_file = models.CharField(max_length=255)
-    deepqa_id = models.CharField(max_length=255)
-    corpus_name = models.CharField(max_length=255)
-    docno = models.CharField(max_length=255)
-    corpus_plus_docno = models.CharField(max_length=255)
-    file_name = models.CharField(max_length=255)
-
-
-
-
-
-class Context(models.Model):
-    """Key words/strings used to prioritize documents in ResearchSessions."""
-    value = models.TextField()
-
-    research_session = models.ForeignKey(ResearchSession)
-
-
-class Question(models.Model):
-    """A question submitted to Watson."""
-    question_text = models.TextField()
-    document = models.ForeignKey(Document, null=True)
-
-    def __str__(self):
-        return self.question_text
-
-
 class CanLIIDocument(models.Model):
     title = models.TextField()
     documentId = models.CharField(max_length=64)
@@ -267,6 +201,76 @@ class CanLIIDocument(models.Model):
         # This is a somewhat naive assumption however it will be true in the vast majority of cases
         if search == None:
             return None
+
+
+class Page(models.Model):
+    """A web page viewed in a ResearchSession."""
+    page_url = models.TextField()
+    title = models.TextField(blank=True)
+    content = models.TextField(blank=True)
+    website = enum.EnumField(Website, default=Website.NONE)
+    most_recent = models.BooleanField(default=False)
+    snippet = models.BooleanField(default=False)
+
+    research_session = models.ForeignKey(ResearchSession)
+
+class Document(models.Model):
+    """A document in the corpus."""
+    title = models.CharField(max_length=255)
+    publish_date = models.DateField(null=True)
+    url = models.CharField(max_length=255)
+    pinned = models.BooleanField(default=False)
+    content = models.TextField()
+    type = models.IntegerField()
+    source = models.CharField(max_length=255, default="CanLII")
+
+    session = models.ForeignKey(ResearchSession)
+    page = models.ForeignKey(Page)
+    canlii = models.OneToOneField(CanLIIDocument, primary_key=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Evidence(models.Model):
+    # pywatson.answer.evidence.Evidence attributes
+    title = models.CharField(max_length=255)
+    copyright = models.CharField(max_length=255)
+    external_id = models.CharField(max_length=255)
+    terms_of_use = models.CharField(max_length=255)
+    document_path = models.CharField(max_length=255)
+    text = models.TextField()
+    confidence = models.FloatField()
+
+    # pywatson.answer.evidence.MetadataMap attributes
+    original_file = models.CharField(max_length=255)
+    deepqa_id = models.CharField(max_length=255)
+    corpus_name = models.CharField(max_length=255)
+    docno = models.CharField(max_length=255)
+    corpus_plus_docno = models.CharField(max_length=255)
+    file_name = models.CharField(max_length=255)
+
+
+
+
+
+class Context(models.Model):
+    """Key words/strings used to prioritize documents in ResearchSessions."""
+    value = models.TextField()
+
+    research_session = models.ForeignKey(ResearchSession)
+
+
+class Question(models.Model):
+    """A question submitted to Watson."""
+    question_text = models.TextField()
+    document = models.ForeignKey(Document, null=True)
+
+    def __str__(self):
+        return self.question_text
+
+
+
 
 
 class Blacklist(models.Model):
