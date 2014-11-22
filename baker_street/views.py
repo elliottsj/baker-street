@@ -1,19 +1,19 @@
-from django.views.decorators.csrf import ensure_csrf_cookie
-from api.models import Document, Question, Page, ResearchSession, Blacklist
-from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, \
+from baker_street.context_helpers import updateContext
+from baker_street.models import Document, Page, ResearchSession, Blacklist
+from baker_street.serializers import DocumentSerializer, PageSerializer, \
     AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
-from rest_framework import mixins, renderers, permissions, views, viewsets, status
+from django.shortcuts import render
+from rest_framework import permissions, viewsets, status
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import list_route, detail_route
-from rest_framework import generics
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from pycanlii.canlii import CanLII
-from api.scooby_doo.canlii_document import CanLIIDocument
-from django.http import JsonResponse
-from api.scooby_doo.watson_helpers import get_documents
-from api.context_helpers import updateContext
+from baker_street.scooby_doo.watson_helpers import get_documents
+
+
+def index(request):
+    return render(request, 'dashboard/index.html')
+
 
 class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
@@ -48,6 +48,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 #     """API endpoint that allows groups to be viewed or edited"""
 #     queryset = Question.objects.all()
 #     serializer_class = QuestionSerializer
+
 
 class AuthViewSet(viewsets.ModelViewSet):
     queryset = auth.get_user_model().objects.all()

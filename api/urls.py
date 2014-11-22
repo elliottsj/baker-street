@@ -10,6 +10,9 @@ router.register(r'pages', views.PageViewSet)
 router.register(r'blacklist', views.BlacklistViewSet)
 
 urlpatterns = patterns('',
+    # Include the routes registered above
     url(r'^', include(router.urls)),
+
+    # Include routes for logging into the generated documentation site
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

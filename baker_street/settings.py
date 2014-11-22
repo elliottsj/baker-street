@@ -8,9 +8,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -36,16 +37,15 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
-    'dashboard',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'baker_street',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -95,8 +95,9 @@ USE_TZ = True
 # https://devcenter.heroku.com/articles/django-assets
 
 # Static asset configuration
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = 'staticfiles'  # i.e. baker-street/staticfiles/
 STATIC_URL = '/static/'
+
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -150,11 +151,7 @@ REST_FRAMEWORK = {
 
 
 # Custom user model
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'baker_street.User'
 
 # Allow requests from any origin
 CORS_ORIGIN_ALLOW_ALL = True
-
-FIXTURE_DIRS = (
-   '/api/fixtures/',
-)

@@ -1,19 +1,16 @@
+import logging
+from baker_street.exceptions import InvalidDocumentException
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django_enumfield import enum
-from api.enums import Website
+from baker_street.enums import Website
 from pycanlii.canlii import CanLII
 from pycanlii.case import Case
 from pycanlii.legislation import Legislation
-from api.exceptions import InvalidDocumentException
 from django.core.exceptions import MultipleObjectsReturned
 import re
-import logging
-import random as r
-import logging
-import requests
 
 
 class UserManager(BaseUserManager):
