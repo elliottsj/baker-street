@@ -6,6 +6,27 @@ import string
 import requests
 from api.models import VectorSet, CanLIIDocument
 from django.db.models import F
+from django.db import connection, reset_queries
+
+import logging, logging.config
+import sys
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO'
+    }
+}
+logging.config.dictConfig(LOGGING)
+
+
 
 # string of symbols and nums
 s = []
@@ -36,7 +57,7 @@ def relevent_words(url, is_url):
         html = url
 
     soup = BeautifulSoup(html)
-    text = soup.getText()
+    text = soup.body.getText()
 
     # classify text
     tokens = nltk.word_tokenize(text)
@@ -85,11 +106,23 @@ def train(words, session):
     '''
     # add words to vector
 
-    for i in words:
-        result, created = VectorSet.objects.get_or_create(word=i[0], session=session, defaults={'weight' : 1})
-        if not created:
-            result.weight = F('weight') + 1
-            result.save()
+    # for i in words:
+    #     reset_queries()
+    #     result, created = VectorSet.objects.get_or_create(word=i[0], session=session, defaults={'weight' : 1})
+    #     if not created:
+    #         result.weight = F('weight') + 1
+    #         result.save()
+    #     logging.info(connection.queries)
+
+    words = [word[0] for word in words]
+    words = list(set(words))
+    queryset = VectorSet.objects.filter(word__in=words, session=session)
+    queryset.weight = F('weight') + 1
+    words = set(words) - set([l.word for l in queryset])
+    new_vectors = [VectorSet]
+
+
+    return None
 
 def updateContext(title, session):
     document = CanLIIDocument.search(title)
