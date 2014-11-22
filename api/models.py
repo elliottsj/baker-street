@@ -7,6 +7,7 @@ from api.enums import Website
 from pycanlii.canlii import CanLII
 from pycanlii.case import Case
 from pycanlii.legislation import Legislation
+import re
 import random as r
 import logging
 import requests
@@ -185,28 +186,35 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
-        models = CanLIIDocument.objects.filter(title__contains=title)
-
-        ## Attempt to coax out some documents
-        if len(models) == 0:
-            l = title.split(',')
-            models = CanLIIDocument.objects.filter(title__contains=l[0])
-            i = len(title) - 1
-            while(len(models) == 0 and i > 1):
-                models = CanLIIDocument.objects.filter(title__contains=title[0:i])
-                i//=2
+        regex = "[0-9]{4} [a-zA-Z0-9]+ [0-9]+ \([a-zA-Z0-9- ]+\)"
 
 
-        # Say fuck it
-        if len(models) == 0:
-            return None
 
-        # Deal with too many results, probably by crying, hopefully with a fancy algorithm
-        # I'm envisioning something that compares based on words starting from the begining
-        if (len(models) > 1):
-            model = r.choice(models)
-        else:
-            model = models[0]
+
+
+
+        # models = CanLIIDocument.objects.filter(title__contains=title)
+        #
+        # ## Attempt to coax out some documents
+        # if len(models) == 0:
+        #     l = title.split(',')
+        #     models = CanLIIDocument.objects.filter(title__contains=l[0])
+        #     i = len(title) - 1
+        #     while(len(models) == 0 and i > 1):
+        #         models = CanLIIDocument.objects.filter(title__contains=title[0:i])
+        #         i//=2
+        #
+        #
+        # # Say fuck it
+        # if len(models) == 0:
+        #     return None
+        #
+        # # Deal with too many results, probably by crying, hopefully with a fancy algorithm
+        # # I'm envisioning something that compares based on words starting from the begining
+        # if (len(models) > 1):
+        #     model = r.choice(models)
+        # else:
+        #     model = models[0]
         # this will require knowing if it's legislation or a case, should deal with this
         if not model.populated:
             if model.type == 0: # it's a case
