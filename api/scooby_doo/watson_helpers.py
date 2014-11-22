@@ -5,7 +5,7 @@ from pycanlii.canlii import CanLII
 from bs4 import BeautifulSoup
 import requests
 
-def f(text):
+def call_watson(text):
     watson = Watson(url='https://watson-wdc01.ihost.com/instance/507/deepqa/v1',
                     username='ut_student5', password='9JwXacPH')
 
@@ -15,21 +15,21 @@ def f(text):
     answer = watson.ask_question(text, question=question)
     return answer
 
-def g(title):
+def search_db(title):
     r = CanLIIDocument.search(title)
     b = BeautifulSoup(r.content)
     text = b.get_text()
     return text
 
-def h(t):
-    t = g(t)
+def generate_questions_and_call_watson(t):
+    t = search_db(t)
     s = t.split('\n')
     mid = (len(s) * 3) // 4
-    answer = f(s[mid])
+    answer = call_watson(s[mid])
     return answer.evidence_list
 
 def get_documents(t, session):
-    evidence = h(t)
+    evidence = generate_questions_and_call_watson(t)
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
     l = []
     for e in evidence:
