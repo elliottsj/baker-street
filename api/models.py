@@ -171,15 +171,15 @@ class Question(models.Model):
         return self.question_text
 
 class CanLIIDocument(models.Model):
-    title = models.TextField(db_index=True)
-    documentId = models.CharField(max_length=64, db_index=True)
-    databaseId = models.CharField(max_length=64, db_index=True)
+    title = models.TextField()
+    documentId = models.CharField(max_length=64)
+    databaseId = models.CharField(max_length=64)
     type = models.IntegerField(db_index=True) # 0 is case, 1 is legislation
-    populated = models.BooleanField(default=False, db_index=True)
+    populated = models.BooleanField(default=False)
     url = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
     repealed = models.NullBooleanField(default=None)
-    citation = models.CharField(max_length=255)
+    citation = models.CharField(max_length=255, db_index=True)
 
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
 
