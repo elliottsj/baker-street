@@ -149,7 +149,7 @@ class Page(models.Model):
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
     most_recent = models.BooleanField(default=False)
-    snippet = models.BooleanField()
+    snippet = models.BooleanField(default=False)
 
     research_session = models.ForeignKey(ResearchSession)
 
