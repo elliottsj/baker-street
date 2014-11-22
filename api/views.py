@@ -25,7 +25,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
         documents = get_documents(page.title)
         ms = []
         for d in documents:
-            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False))
+            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False,
+                                                  content=d.content, type=d.type))
         serializer = DocumentSerializer(ms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

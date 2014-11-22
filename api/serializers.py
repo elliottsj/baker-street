@@ -5,7 +5,7 @@ from rest_framework import serializers
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ('title', 'url', 'pinned')
+        fields = ('title', 'url', 'pinned', 'content', 'type', 'source')
 
 
 class QuestionSerializer(serializers.ModelSerializer):

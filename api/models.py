@@ -114,6 +114,10 @@ class Document(models.Model):
     publish_date = models.DateField(null=True)
     url = models.CharField(max_length=255)
     pinned = models.BooleanField(default=False)
+    content = models.TextField()
+    type = models.IntegerField()
+    source = models.CharField(max_length=255, default="CanLII")
+
     session = models.ForeignKey(ResearchSession)
 
     def __str__(self):
@@ -173,6 +177,7 @@ class CanLIIDocument(models.Model):
     populated = models.BooleanField(default=False)
     url = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
+    repealed = models.NullBooleanField(default=None)
 
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
 
@@ -226,3 +231,11 @@ class CanLIIDocument(models.Model):
             model.save
 
         return model
+
+
+class PrioritizedText(models.Model):
+
+
+
+
+    research_session = models.ForeignKey(ResearchSession)
