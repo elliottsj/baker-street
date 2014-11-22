@@ -1,18 +1,17 @@
-from baker_street.context_helpers import updateContext
-from baker_street.forms import UserCreationForm
-from baker_street.models import Document, Page, ResearchSession, Blacklist
-from baker_street.serializers import DocumentSerializer, PageSerializer, \
-    AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
 from django.contrib.auth import forms
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_protect
 from rest_framework import permissions, viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
 from rest_framework import renderers
 from rest_framework.response import Response
-from baker_street.scooby_doo.watson_helpers import get_documents
+
+from baker_street.context_helpers import updateContext
+from baker_street.forms import UserCreationForm
+from baker_street.models import Document, Page, ResearchSession, Blacklist
+from baker_street.serializers import DocumentSerializer, PageSerializer, \
+    AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from baker_street.tasks import populate
 
 
