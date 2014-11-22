@@ -18,6 +18,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request, format=None):
         session = request.user.current_session
@@ -27,7 +28,14 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, format=None):
-        return Response(status=status.HTTP_501_BAD_REQUEST)
+        document = Document.objects.get(title=request.DATA['title'])
+        if (document.research_session != request.user.current_session):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            document.pinned = True
+            document.save()
+            serializer = DocumentSerializer(document)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
