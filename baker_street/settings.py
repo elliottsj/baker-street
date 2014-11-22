@@ -58,7 +58,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'baker_street.urls'
-CELERY_ALWAYS_EAGER = True
 
 WSGI_APPLICATION = 'baker_street.wsgi.application'
 
