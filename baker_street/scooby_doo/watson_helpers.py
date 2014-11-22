@@ -1,4 +1,4 @@
-from baker_street.context_helpers import getContext
+from baker_street.context_helpers import getContext, assertion
 from baker_street.models import CanLIIDocument
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
@@ -8,11 +8,13 @@ from baker_street.exceptions import InvalidDocumentException
 import requests
 
 
-def call_watson(text, session):
+def call_watson(body, session):
     watson = Watson(url='https://watson-wdc01.ihost.com/instance/507/deepqa/v1',
                     username='ut_student5', password='9JwXacPH')
+    context = getContext(session)
+    text = assertion(body, False, context, 1)[0]
 
-    question = WatsonQuestion(text, formatted_answer=True, items=3, context=getContext(session),
+    question = WatsonQuestion(text, formatted_answer=True, items=5, context=context,
                           evidence_request= { "items": 2, "profile" : "yes"})
 
     answer = watson.ask_question(text, question=question)
@@ -20,15 +22,12 @@ def call_watson(text, session):
 
 def search_db(title):
     r = CanLIIDocument.search(title)
-    b = BeautifulSoup(r.content)
-    text = b.get_text()
-    return text
+    return r.content
 
 def generate_questions_and_call_watson(t, session):
-    t = search_db(t)
-    s = t.split('\n')
-    mid = (len(s) * 3) // 4
-    answer = call_watson(s[mid], session)
+    body = search_db(t)
+
+    answer = call_watson(body, session)
     return answer.evidence_list
 
 def get_documents(t, session):

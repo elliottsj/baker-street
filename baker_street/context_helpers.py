@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup # parsing HTML
 import string
 import requests
 from django.db.models import F
+import re
 
 import logging, logging.config
 import sys
@@ -112,3 +113,32 @@ def getContext(session):
     for query in querys:
         s += " " + query.word
     return s[1:]
+
+def assertion(url, is_url, context, n):
+    # get text
+    if is_url:
+        html = requests.get(url).text
+    else:
+        html = url
+
+    soup = BeautifulSoup(html)
+    text = soup.body.getText().replace("\n", "").replace("\t", "")
+
+    sentences = re.split("\.", text)
+
+    final = []
+    count = 0
+    for s in sentences:
+        for c in context:
+            if c in s:
+                 final.append(s + '.')
+                 count += 1
+            if count >= n:
+                return final
+
+    if count < n:
+        while count < n:
+            final.append(sentences[count] + '.')
+            count += 1
+
+    return final
