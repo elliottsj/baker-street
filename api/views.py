@@ -123,7 +123,8 @@ class PageViewSet(viewsets.ModelViewSet):
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"])
+            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"],
+                                        content=request.DATA["content"])
             m = session.setCurrentPage(m)
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
