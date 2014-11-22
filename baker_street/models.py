@@ -221,7 +221,7 @@ class CanLIIDocument(models.Model):
                 model.save
             return model
 
-        regex = re.compile("[A-Z]+ [0-9]{4}(-[0-9]{2})?, c (([0-9]+)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
+        regex = re.compile("[A-Z]+( [0-9]{4}(-[0-9]{2})?)?(,)? c (([A-Z]*[0-9]*)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
         search = regex.search(title)
         if search != None: # it's a Statute
             snippet = title[search.regs[0][0]:search.regs[0][1]]
