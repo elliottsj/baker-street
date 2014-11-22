@@ -49,7 +49,7 @@ def get_documents(t, session, items=3, calls=1):
     return l
 
 def backgroundUpdate(session):
-    calls = 10 # Constant number of calls
+    calls = 4 # Constant number of calls
     items = 3 # Constant number of items
 
     page = session.current_page

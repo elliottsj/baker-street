@@ -274,7 +274,7 @@ class Blacklist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
 class VectorSet(models.Model):
-    word = models.CharField(max_length=255)
+    word = models.CharField(max_length=255, db_index=True)
     weight = models.IntegerField()
 
     session = models.ForeignKey(ResearchSession)

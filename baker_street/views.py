@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from baker_street.scooby_doo.watson_helpers import get_documents
+from baker_street.tasks import populate
 
 
 def index(request):
@@ -23,8 +24,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def list(self, request, format=None):
         session = request.user.current_session
-        page = session.current_page
-        documents = get_documents(page.title, session)
+        documents = Document.objects.filter(page=session.current_page)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -123,12 +123,14 @@ class PageViewSet(viewsets.ModelViewSet):
         if (len(m) == 1):
             updateContext(request.DATA["title"], session)
             m = session.setCurrentPage(m[0])
+            populate.delay(session)
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"],
                                         content=request.DATA["content"])
             m = session.setCurrentPage(m)
+            populate.delay(session)
             serializer = PageSerializer(m)
             updateContext(request.DATA["title"], session)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

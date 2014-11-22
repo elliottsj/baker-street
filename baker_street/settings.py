@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'baker_street',
     'djcelery',
+    'kombu.transport.django',
 )
 
 MIDDLEWARE_CLASSES = (
