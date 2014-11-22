@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'django_extensions',
     'baker_street',
+    'kombu.transport.django',
 )
 
 MIDDLEWARE_CLASSES = (
