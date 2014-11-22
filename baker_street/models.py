@@ -188,7 +188,6 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
-
         # Search for a case citation
         regex = re.compile("([0-9]{4} [a-zA-Z0-9]+ [0-9]+ \([a-zA-Z0-9- ]+\))")
         search = regex.search(title)
@@ -198,7 +197,11 @@ class CanLIIDocument(models.Model):
             snippet = snippet.upper()
             snippet = snippet.replace("CANLII", "CanLII")
             try:
-                model = CanLIIDocument.objects.filter(citation=snippet)[0]
+                model = CanLIIDocument.objects.filter(citation=snippet)
+                if len(model) == 0:
+                    raise InvalidDocumentException
+                else:
+                    model = model[0]
             except MultipleObjectsReturned:
                 logging.warning("Apparently cases can potentially return more than 1 result, handle this")
                 raise InvalidDocumentException
