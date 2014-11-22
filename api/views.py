@@ -22,12 +22,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def list(self, request, format=None):
         session = request.user.current_session
         page = session.current_page
-        documents = get_documents(page.title)
-        ms = []
-        for d in documents:
-            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False,
-                                                  content=d.content, type=d.type))
-        serializer = DocumentSerializer(ms, many=True)
+        documents = get_documents(page.title, session)
+        serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, format=None):
@@ -80,8 +76,8 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         POST /research_session handler
         Gets a new research session and returns it
         """
-        if 'id' in request.QUERY_PARAMS:
-            m = request.user.setCurrentSession(request.PARAMS['id'])
+        if 'id' in request.DATA:
+            m = request.user.setCurrentSession(request.DATA['id'])
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
 

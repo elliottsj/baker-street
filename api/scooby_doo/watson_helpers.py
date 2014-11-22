@@ -28,17 +28,20 @@ def h(t):
     answer = f(s[mid])
     return answer.evidence_list
 
-def get_documents(t):
+def get_documents(t, session):
     evidence = h(t)
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
     l = []
     for e in evidence:
         try:
-            x = CanLIIDocument.search(e.title)
-            if x != None:
-                l.append(x)
+            d = CanLIIDocument.search(e.title)
+            if d != None:
+                document = session.document_set.create(title=d.title, url=d.url, pinned=False,
+                                                  content=e.text, type=d.type)
+                l.append(document)
         except requests.exceptions.HTTPError:
             pass
+
     return l
 
 if __name__ == '__main__':
