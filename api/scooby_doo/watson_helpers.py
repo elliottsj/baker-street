@@ -3,6 +3,7 @@ from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
 from bs4 import BeautifulSoup
+from api.exceptions import InvalidDocumentException
 import requests
 
 def call_watson(text):
@@ -39,6 +40,8 @@ def get_documents(t, session):
                 document = session.document_set.create(title=d.title, url=d.url, pinned=False,
                                                   content=e.text, type=d.type)
                 l.append(document)
+        except InvalidDocumentException:
+            pass
         except requests.exceptions.HTTPError:
             pass
 

@@ -7,6 +7,7 @@ from api.enums import Website
 from pycanlii.canlii import CanLII
 from pycanlii.case import Case
 from pycanlii.legislation import Legislation
+from api.exceptions import InvalidDocumentException
 import re
 import random as r
 import logging
@@ -186,47 +187,36 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
-        regex = "[0-9]{4} [a-zA-Z0-9]+ [0-9]+ \([a-zA-Z0-9- ]+\)"
+        regex = re.compile("([0-9]{4} [a-zA-Z0-9]+ [0-9]+ \([a-zA-Z0-9- ]+\))")
+        search = regex.search(title)
 
-
-
-
-
-
-        # models = CanLIIDocument.objects.filter(title__contains=title)
-        #
-        # ## Attempt to coax out some documents
-        # if len(models) == 0:
-        #     l = title.split(',')
-        #     models = CanLIIDocument.objects.filter(title__contains=l[0])
-        #     i = len(title) - 1
-        #     while(len(models) == 0 and i > 1):
-        #         models = CanLIIDocument.objects.filter(title__contains=title[0:i])
-        #         i//=2
-        #
-        #
-        # # Say fuck it
-        # if len(models) == 0:
-        #     return None
-        #
-        # # Deal with too many results, probably by crying, hopefully with a fancy algorithm
-        # # I'm envisioning something that compares based on words starting from the begining
-        # if (len(models) > 1):
-        #     model = r.choice(models)
-        # else:
-        #     model = models[0]
-        # this will require knowing if it's legislation or a case, should deal with this
-        if not model.populated:
-            if model.type == 0: # it's a case
+        if search != None:
+            # It's a valid case
+            snippet = title[search.regs[0][0]:search.regs[0][1]]
+            snippet = snippet.upper()
+            snippet = snippet.replace("CANLII", "CanLII")
+            model = CanLIIDocument.objects.get(citation=snippet)
+            if not model.populated: # it's a case
                 input = { 'caseId' : { 'en' : model.documentId },
                           'databaseId' : model.databaseId,
                           'title' : model.title,
-                          'citation' : ''
+                          'citation' : model.citation
                           }
                 case = Case(input, "zxxdp6fyt5fatyfv44smrsbw")
                 model.content = case.content
                 model.url = case.url
                 model.populate = True
+                model.save
+                return model
+
+        # If there is no match on the citation we're assuming it's not a document in CanLII
+        # This is a somewhat naive assumption however it will be true in the vast majority of cases
+        if search == None:
+            raise InvalidDocumentException
+
+
+
+
             else: #it's legislation
                 input = { 'legislationId' :  model.documentId,
                           'databaseId' : model.databaseId,
@@ -238,9 +228,9 @@ class CanLIIDocument(models.Model):
                 model.content = legis.content
                 model.url = legis.url
                 model.populate = True
-            model.save
 
-        return model
+
+
 
 class Blacklist(models.Model):
     url = models.CharField(max_length=255)
