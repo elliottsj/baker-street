@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
-from api.models import Document, Question, Page, ResearchSession
+from api.models import Document, Question, Page, ResearchSession, Blacklist
 from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, \
-    AuthTokenSerializer, ResearchSessionSerializer
+    AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
 from rest_framework import mixins, renderers, permissions, views, viewsets, status
 from rest_framework.authtoken.models import Token
@@ -13,24 +13,30 @@ from pycanlii.canlii import CanLII
 from api.scooby_doo.canlii_document import CanLIIDocument
 from django.http import JsonResponse
 from api.scooby_doo.watson_helpers import get_documents
+from api.context_helpers import updateContext
 
 class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request, format=None):
         session = request.user.current_session
         page = session.current_page
-        documents = get_documents(page.title)
-        ms = []
-        for d in documents:
-            ms.append(session.document_set.create(title=d.title, url=d.url, pinned=False))
-        serializer = DocumentSerializer(ms, many=True)
+        documents = get_documents(page.title, session)
+        serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, format=None):
-        return Response(status=status.HTTP_501_BAD_REQUEST)
+        document = Document.objects.get(url=request.URL['url'])
+        if (document.research_session != request.user.current_session):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            document.pinned = True
+            document.save()
+            serializer = DocumentSerializer(document)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
@@ -79,8 +85,8 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         POST /research_session handler
         Gets a new research session and returns it
         """
-        if 'id' in request.QUERY_PARAMS:
-            m = request.user.setCurrentSession(request.PARAMS['id'])
+        if 'id' in request.DATA:
+            m = request.user.setCurrentSession(request.DATA['id'])
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -107,20 +113,23 @@ class PageViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Page.objects.filter(research_session=self.request.user.current_session)
+        return Page.objects.filter(research_session=self.request.user.current_session, snippet=False)
 
     def create(self, request, format=None):
         #serializer = PageSerializer(data=request.DATA)
         session = request.user.current_session
         m = Page.objects.filter(research_session=session, title=request.DATA["title"], page_url=request.DATA["page_url"])
         if (len(m) == 1):
+            updateContext(request.DATA["title"], session)
             m = session.setCurrentPage(m[0])
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"])
+            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"],
+                                        content=request.DATA["content"])
             m = session.setCurrentPage(m)
             serializer = PageSerializer(m)
+            updateContext(request.DATA["title"], session)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @list_route(methods=["GET"])
@@ -133,4 +142,18 @@ class PageViewSet(viewsets.ModelViewSet):
         if (not m):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PageSerializer(m)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BlacklistViewSet(viewsets.ModelViewSet):
+    model = Blacklist
+    serializer_class = BlacklistSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Blacklist.objects.filter(user=self.request.user)
+
+    def create(self, request, format=None):
+        m = request.user.blacklist_set.create(url=request.user)
+        serializer = BlacklistSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)

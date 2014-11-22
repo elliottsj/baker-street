@@ -5,7 +5,7 @@ from rest_framework import serializers
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ('title', 'url', 'pinned')
+        fields = ('title', 'url', 'pinned', 'content', 'type', 'source')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -77,6 +77,12 @@ class PageSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False)
     class Meta:
         model = Page
-        fields = ('page_url', 'title', 'content', 'most_recent')
+        fields = ('page_url', 'title', 'content', 'most_recent', 'snippet')
         read_only_fields = ('most_recent',)
+
+
+class BlacklistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('url',)
 
