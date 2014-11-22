@@ -69,12 +69,9 @@ def backgroundUpdate(session):
                 document = CanLIIDocument.search(e.title)
                 if document != None:
                     session.document_set.create(title=document.title, url=document.url, pinned=False, content=e.text,
-                                                type=document.type, page=page)
+                                                type=document.type, page=page, canlii=canliipage)
             except requests.exceptions.HTTPError:
                 pass
-
-
-
 
 
 if __name__ == '__main__':
