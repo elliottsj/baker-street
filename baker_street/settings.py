@@ -59,6 +59,9 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'baker_street.urls'
 
+# Uncomment line below to allow breakpoints to work in code executed via celery
+# CELERY_ALWAYS_EAGER = True
+
 WSGI_APPLICATION = 'baker_street.wsgi.application'
 
 
