@@ -25,14 +25,6 @@ def populate_canlii(apps, scheme_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0024_canliidocument_citation'),
-    ]
-
-
-
-class Migration(migrations.Migration):
-
-    dependencies = [
         ('api', '0001_initial'),
     ]
 
