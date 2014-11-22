@@ -6,25 +6,10 @@ from bs4 import BeautifulSoup # parsing HTML
 import string
 import requests
 from django.db.models import F
-from django.db import connection, reset_queries
 
 import logging, logging.config
 import sys
 
-LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-        }
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO'
-    }
-}
-logging.config.dictConfig(LOGGING)
 
 
 
@@ -104,25 +89,14 @@ def train(words, session):
 
         FOR NOW: use weights, and change fix vector to work for our needs
     '''
-    # add words to vector
-
-    # for i in words:
-    #     reset_queries()
-    #     result, created = VectorSet.objects.get_or_create(word=i[0], session=session, defaults={'weight' : 1})
-    #     if not created:
-    #         result.weight = F('weight') + 1
-    #         result.save()
-    #     logging.info(connection.queries)
 
     words = [word[0] for word in words]
     words = list(set(words))
     queryset = VectorSet.objects.filter(word__in=words, session=session)
     queryset.weight = F('weight') + 1
     words = set(words) - set([l.word for l in queryset])
-    new_vectors = [VectorSet(word=word, weight=1) for word in words]
+    new_vectors = [VectorSet(word=word, weight=1, session=session) for word in words]
     VectorSet.objects.bulk_create(new_vectors)
-
-
 
     return None
 
