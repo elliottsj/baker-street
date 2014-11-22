@@ -179,6 +179,7 @@ class CanLIIDocument(models.Model):
     url = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
     repealed = models.NullBooleanField(default=None)
+    citation = models.CharField(max_length=255)
 
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
 
