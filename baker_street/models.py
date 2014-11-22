@@ -218,7 +218,7 @@ class CanLIIDocument(models.Model):
                 model.content = case.content
                 model.url = case.url
                 model.populated = True
-                model.save
+                model.save()
             return model
 
         regex = re.compile("[A-Z]+( [0-9]{4}(-[0-9]{2})?)?(,)? c (([A-Z]*[0-9]*)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
@@ -242,7 +242,7 @@ class CanLIIDocument(models.Model):
                 model.url = legis.url
                 model.repealed = legis.repealed
                 model.populated = True
-                model.save
+                model.save()
             return model
 
 
