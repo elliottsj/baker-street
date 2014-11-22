@@ -80,3 +80,9 @@ class PageSerializer(serializers.ModelSerializer):
         fields = ('page_url', 'title', 'content', 'most_recent', 'snippet')
         read_only_fields = ('most_recent',)
 
+
+class BlacklistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('url',)
+

@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
-from api.models import Document, Question, Page, ResearchSession
+from api.models import Document, Question, Page, ResearchSession, Blacklist
 from api.serializers import DocumentSerializer, QuestionSerializer, UserSerializer, PageSerializer, \
-    AuthTokenSerializer, ResearchSessionSerializer
+    AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
 from rest_framework import mixins, renderers, permissions, views, viewsets, status
 from rest_framework.authtoken.models import Token
@@ -138,4 +138,18 @@ class PageViewSet(viewsets.ModelViewSet):
         if (not m):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PageSerializer(m)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BlacklistViewSet(viewsets.ModelViewSet):
+    model = Blacklist
+    serializer_class = BlacklistSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Blacklist.objects.filter(user=self.request.user)
+
+    def create(self, request, format=None):
+        m = request.user.blacklist_set.create(url=request.user)
+        serializer = BlacklistSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
