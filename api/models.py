@@ -149,6 +149,7 @@ class Page(models.Model):
     content = models.TextField(blank=True)
     website = enum.EnumField(Website, default=Website.NONE)
     most_recent = models.BooleanField(default=False)
+    snippet = models.BooleanField()
 
     research_session = models.ForeignKey(ResearchSession)
 
@@ -231,11 +232,3 @@ class CanLIIDocument(models.Model):
             model.save
 
         return model
-
-
-class PrioritizedText(models.Model):
-
-
-
-
-    research_session = models.ForeignKey(ResearchSession)

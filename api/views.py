@@ -28,7 +28,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, format=None):
-        document = Document.objects.get(title=request.DATA['title'])
+        document = Document.objects.get(url=request.URL['url'])
         if (document.research_session != request.user.current_session):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
@@ -112,7 +112,7 @@ class PageViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Page.objects.filter(research_session=self.request.user.current_session)
+        return Page.objects.filter(research_session=self.request.user.current_session, snippet=False)
 
     def create(self, request, format=None):
         #serializer = PageSerializer(data=request.DATA)
