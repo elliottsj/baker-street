@@ -13,7 +13,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
+BROKER_URL = 'django://'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'django_extensions',
     'baker_street',
-    'kombu.transport.django',
+    'djcelery',
 )
 
 MIDDLEWARE_CLASSES = (

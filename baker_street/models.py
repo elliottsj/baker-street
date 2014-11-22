@@ -109,6 +109,16 @@ class ResearchSession(models.Model):
     def current_page(self):
         return Page.objects.get(research_session=self, most_recent=True)
 
+class Page(models.Model):
+    """A web page viewed in a ResearchSession."""
+    page_url = models.TextField()
+    title = models.TextField(blank=True)
+    content = models.TextField(blank=True)
+    website = enum.EnumField(Website, default=Website.NONE)
+    most_recent = models.BooleanField(default=False)
+    snippet = models.BooleanField(default=False)
+
+    research_session = models.ForeignKey(ResearchSession)
 
 class Document(models.Model):
     """A document in the corpus."""
@@ -121,6 +131,7 @@ class Document(models.Model):
     source = models.CharField(max_length=255, default="CanLII")
 
     session = models.ForeignKey(ResearchSession)
+    page = models.ForeignKey(Page)
 
     def __str__(self):
         return self.title
@@ -145,16 +156,7 @@ class Evidence(models.Model):
     file_name = models.CharField(max_length=255)
 
 
-class Page(models.Model):
-    """A web page viewed in a ResearchSession."""
-    page_url = models.TextField()
-    title = models.TextField(blank=True)
-    content = models.TextField(blank=True)
-    website = enum.EnumField(Website, default=Website.NONE)
-    most_recent = models.BooleanField(default=False)
-    snippet = models.BooleanField(default=False)
 
-    research_session = models.ForeignKey(ResearchSession)
 
 
 class Context(models.Model):
@@ -199,12 +201,12 @@ class CanLIIDocument(models.Model):
             try:
                 model = CanLIIDocument.objects.filter(citation=snippet)
                 if len(model) == 0:
-                    raise InvalidDocumentException
+                    return None
                 else:
                     model = model[0]
             except MultipleObjectsReturned:
                 logging.warning("Apparently cases can potentially return more than 1 result, handle this")
-                raise InvalidDocumentException
+                return None
 
             if not model.populated:
                 input = { 'caseId' : { 'en' : model.documentId },
@@ -264,7 +266,7 @@ class CanLIIDocument(models.Model):
         # If there is no match on the citation we're assuming it's not a document in CanLII
         # This is a somewhat naive assumption however it will be true in the vast majority of cases
         if search == None:
-            raise InvalidDocumentException
+            return None
 
 
 class Blacklist(models.Model):
