@@ -48,6 +48,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 #     queryset = Question.objects.all()
 #     serializer_class = QuestionSerializer
 
+
 class AuthViewSet(viewsets.ModelViewSet):
     queryset = auth.get_user_model().objects.all()
     serializer_class = AuthTokenSerializer
