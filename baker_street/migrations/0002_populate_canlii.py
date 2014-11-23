@@ -2,10 +2,8 @@
 from __future__ import unicode_literals
 import pickle
 from zipfile import ZipFile
-import gc
 
-from django.db import migrations, transaction
-from pycanlii.canlii import CanLII
+from django.db import migrations
 
 
 def populate_canlii(apps, scheme_editor):
@@ -18,12 +16,10 @@ def populate_canlii(apps, scheme_editor):
     case_list = [
         CanLIIDocument(title=case.title, documentId=case.caseId, databaseId=case.databaseId,
                        citation=case.citation, type=0, populated=False) for case in cases]
-    i = 0
-    block_size = 750
-    while((i + 1) * block_size < len(case_list)):
-        CanLIIDocument.objects.bulk_create(case_list[i * block_size:(i + 1) * block_size])
-        i += 1
-    CanLIIDocument.objects.bulk_create(case_list[i * block_size:])
+
+    # Insert documents in chunks
+    for i in range(0, len(case_list), 750):
+        CanLIIDocument.objects.bulk_create(case_list[i:i + 750])
 
     with ZipFile('scripts/canlii_legislations.pickle.zip', 'r') as z:
         with z.open('canlii_legislations.pickle', 'r') as f:
