@@ -13,6 +13,7 @@ from pycanlii.canlii import CanLII
 from api.scooby_doo.canlii_document import CanLIIDocument
 from django.http import JsonResponse
 from api.scooby_doo.watson_helpers import get_documents
+from api.context_helpers import updateContext
 
 class DocumentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows documents to be viewed or edited"""
@@ -119,6 +120,7 @@ class PageViewSet(viewsets.ModelViewSet):
         session = request.user.current_session
         m = Page.objects.filter(research_session=session, title=request.DATA["title"], page_url=request.DATA["page_url"])
         if (len(m) == 1):
+            updateContext(request.DATA["title"], session)
             m = session.setCurrentPage(m[0])
             serializer = PageSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -127,6 +129,7 @@ class PageViewSet(viewsets.ModelViewSet):
                                         content=request.DATA["content"])
             m = session.setCurrentPage(m)
             serializer = PageSerializer(m)
+            updateContext(request.DATA["title"], session)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @list_route(methods=["GET"])

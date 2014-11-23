@@ -200,7 +200,7 @@ class CanLIIDocument(models.Model):
             snippet = snippet.upper()
             snippet = snippet.replace("CANLII", "CanLII")
             try:
-                model = CanLIIDocument.objects.filter(citation=snippet)
+                model = CanLIIDocument.objects.filter(citation=snippet)[0]
             except MultipleObjectsReturned:
                 logging.warning("Apparently cases can potentially return more than 1 result, handle this")
                 raise InvalidDocumentException
@@ -266,8 +266,12 @@ class CanLIIDocument(models.Model):
             raise InvalidDocumentException
 
 
-
-
 class Blacklist(models.Model):
     url = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+class VectorSet(models.Model):
+    word = models.CharField(max_length=255)
+    weight = models.IntegerField()
+
+    session = models.ForeignKey(ResearchSession)

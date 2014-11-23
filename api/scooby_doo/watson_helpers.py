@@ -4,13 +4,14 @@ from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
 from bs4 import BeautifulSoup
 from api.exceptions import InvalidDocumentException
+from api.context_helpers import getContext
 import requests
 
-def call_watson(text):
+def call_watson(text, session):
     watson = Watson(url='https://watson-wdc01.ihost.com/instance/507/deepqa/v1',
                     username='ut_student5', password='9JwXacPH')
 
-    question = WatsonQuestion(text, formatted_answer=True, items=3,
+    question = WatsonQuestion(text, formatted_answer=True, items=3, context=getContext(session),
                           evidence_request= { "items": 2, "profile" : "yes"})
 
     answer = watson.ask_question(text, question=question)
@@ -22,15 +23,15 @@ def search_db(title):
     text = b.get_text()
     return text
 
-def generate_questions_and_call_watson(t):
+def generate_questions_and_call_watson(t, session):
     t = search_db(t)
     s = t.split('\n')
     mid = (len(s) * 3) // 4
-    answer = call_watson(s[mid])
+    answer = call_watson(s[mid], session)
     return answer.evidence_list
 
 def get_documents(t, session):
-    evidence = generate_questions_and_call_watson(t)
+    evidence = generate_questions_and_call_watson(t, session)
     canlii = CanLII("zxxdp6fyt5fatyfv44smrsbw")
     l = []
     for e in evidence:

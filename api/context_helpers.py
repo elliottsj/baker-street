@@ -4,6 +4,7 @@ from operator import itemgetter
 from bs4 import BeautifulSoup # parsing HTML
 import string
 import requests
+from api.models import VectorSet, CanLIIDocument
 
 # string of symbols and nums
 s = []
@@ -16,8 +17,6 @@ for d in range(len(string.digits) - 1):
 # cluster = nltk.cluster.api.ClusterI()
 # vector of classified words
 vector = {}
-# phase number
-phase = 0
 
 
 def relevent_words(url, is_url):
@@ -77,7 +76,7 @@ def relevent_words(url, is_url):
     
     return words
 
-def train(words, phase):
+def train(words, session):
     ''' GOAL: Using clustering using EM cluster data to find context.
         This should be improving with add new data with iterations.
 
@@ -85,47 +84,26 @@ def train(words, phase):
     '''
     # add words to vector
     for i in words:
-        if i[0] not in vector:
-            vector[i[0]] = 1
+        results = VectorSet.objects.filter(word=i[0], session=session)
+        if len(results) == 0:
+            VectorSet.objects.create(word=i[0], weight=1, session=session)
         else:
-            vector[i[0]] = vector[i[0]] + 1
+            result = results[0]
+            result.weight += 1
+            result.save()
 
-    # fix vector every 5 iterations
-    items_rm = []
-    if phase == 4:
-        for item in vector.keys():
-            if vector[item] < 5:
-                items_rm.append(item)
-        phase = 0
+def updateContext(title, session):
+    document = CanLIIDocument.search(title)
+    train(relevent_words(document.content, False), session)
 
-    # remove items
-    for key in items_rm:
-        vector.pop(key)
-    
-    return phase + 1
+def getContext(session):
+    querys = VectorSet.objects.filter(session=session)
+    querys = querys.order_by('-weight')
+    querys = querys[:29]
+    s = ""
+    for query in querys:
+        s += " " + query.word
+    return s[1:]
 
-def get_context(num):
-    '''
-    Return contect for
-    (int) num is the number of items wanted back
-    '''
-    v_list = list(vector.items())
-    final = sorted(v_list, key=itemgetter(1), reverse=True)
-    
-    return final[0:num-1]
 
-if __name__ == '__main__':
-    # some testing
-    w = relevent_words("https://www.canlii.org/en/on/onhrt/doc/2013/2013hrto718/2013hrto718.html?searchUrlHash=AAAAAQAKZW1wbG95bWVudAAAAAAB", True)
-    phase = train(w, phase)
-    w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2005/2005canlii11562/2005canlii11562.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
-    phase = train(w, phase)
-    w = relevent_words("https://www.canlii.org/en/on/onwsiat/doc/2010/2010onwsiat637/2010onwsiat637.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB",True) 
-    phase = train(w, phase)
-    w = relevent_words("https://www.canlii.org/en/on/onsc/doc/2012/2012onsc6387/2012onsc6387.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
-    phase = train(w, phase)
-    w = relevent_words("https://www.canlii.org/en/on/onlrb/doc/2004/2004canlii14309/2004canlii14309.html?searchUrlHash=AAAAAQAWZW1wbG95bWVudCB0ZXJtaW5hdGlvbgAAAAAB", True)
-    phase = train(w, phase)
-
-    print(get_context(10))
     
