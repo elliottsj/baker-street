@@ -95,7 +95,6 @@ def train(words, session):
     words = list(set(words))
     queryset = VectorSet.objects.filter(word__in=words, session=session)
     queryset.weight = F('weight') + 1
-    queryset.save()
     words = set(words) - set([l.word for l in queryset])
     new_vectors = [VectorSet(word=word, weight=1, session=session) for word in words]
     VectorSet.objects.bulk_create(new_vectors)
