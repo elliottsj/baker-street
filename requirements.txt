@@ -6,7 +6,6 @@ django-cors-headers==0.13
 django-enumfield==1.1.1
 django-extensions==1.4.6
 django-filter==0.8
--e git+https://github.com/tkaemming/django-subdomains.git@7c57f0257dc1aaae7118f291e729f44ca3883532#egg=django_subdomains-master
 django-suit==0.2.11
 djangorestframework==2.4.3
 enum34==1.0.3
