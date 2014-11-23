@@ -8,7 +8,9 @@ from pycanlii.canlii import CanLII
 from pycanlii.case import Case
 from pycanlii.legislation import Legislation
 from api.exceptions import InvalidDocumentException
+from django.core.exceptions import MultipleObjectsReturned
 import re
+import logging
 import random as r
 import logging
 import requests
@@ -176,7 +178,7 @@ class CanLIIDocument(models.Model):
     title = models.TextField()
     documentId = models.CharField(max_length=64)
     databaseId = models.CharField(max_length=64)
-    type = models.IntegerField(db_index=True) # 0 is case, 1 is legislation
+    type = models.IntegerField(db_index=True) # 0 is case, 1 is statutes, 2 is regulation
     populated = models.BooleanField(default=False)
     url = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
@@ -187,15 +189,20 @@ class CanLIIDocument(models.Model):
 
     @staticmethod
     def search(title):
+        # Search for a case citation
         regex = re.compile("([0-9]{4} [a-zA-Z0-9]+ [0-9]+ \([a-zA-Z0-9- ]+\))")
         search = regex.search(title)
-
         if search != None:
             # It's a valid case
             snippet = title[search.regs[0][0]:search.regs[0][1]]
             snippet = snippet.upper()
             snippet = snippet.replace("CANLII", "CanLII")
-            model = CanLIIDocument.objects.get(citation=snippet)
+            try:
+                model = CanLIIDocument.objects.filter(citation=snippet)
+            except MultipleObjectsReturned:
+                logging.warning("Apparently cases can potentially return more than 1 result, handle this")
+                raise InvalidDocumentException
+
             if not model.populated: # it's a case
                 input = { 'caseId' : { 'en' : model.documentId },
                           'databaseId' : model.databaseId,
@@ -205,25 +212,53 @@ class CanLIIDocument(models.Model):
                 case = Case(input, "zxxdp6fyt5fatyfv44smrsbw")
                 model.content = case.content
                 model.url = case.url
-                model.populate = True
+                model.populated = True
                 model.save
-                return model
+            return model
+
+        regex = re.compile("[A-Z]+ [0-9]{4}(-[0-9]{2})?, c (([0-9]+)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
+        search = regex.search(title)
+        if search != None: #it's a Statute
+            snippet = title[search.regs[0][0]:search.regs[0][1]]
+            models = CanLIIDocument.objects.filter(citation=snippet)#.exclude(repealed=True)
+            model = models[0]
+            if not model.populated:
+                input = { 'legislationId' :  model.documentId,
+                          'databaseId' : model.databaseId,
+                          'title' : model.title,
+                          'citation' : model.citation,
+                          'type' : "STATUTE"
+                }
+                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+                model.content = legis.content
+                model.url = legis.url
+                model.repealed = legis.repealed
+                model.populated = True
+                model.save
+            return model
+
+
+            # else: #it's legislation
+            #     input = { 'legislationId' :  model.documentId,
+            #               'databaseId' : model.databaseId,
+            #               'title' : model.title,
+            #               'citation' : model.citation,
+            #               'type' : "REGULATION"
+            #               }
+            #     legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+            #     model.content = legis.content
+            #     model.url = legis.url
+            #     model.populated = True
+
+
+        # STILL NEED TO LOOK FOR REGULATIONS
+
+
 
         # If there is no match on the citation we're assuming it's not a document in CanLII
         # This is a somewhat naive assumption however it will be true in the vast majority of cases
         if search == None:
             raise InvalidDocumentException
-        else: #it's legislation
-            input = { 'legislationId' :  model.documentId,
-                      'databaseId' : model.databaseId,
-                      'title' : model.title,
-                      'citation' : '',
-                      'type' : "REGULATION"
-                      }
-            legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
-            model.content = legis.content
-            model.url = legis.url
-            model.populate = True
 
 
 
