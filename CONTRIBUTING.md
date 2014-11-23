@@ -36,3 +36,14 @@ bundle install
 ```shell
 ./manage.py runserver
 ```
+
+## Deploying
+
+We're using [Dokku][dokku] on Amazon Web Services. Add the remote and push to deploy:
+
+```shell
+git remote add dokku dokku@sherlocke.me:sherlocke.me
+git push dokku
+```
+
+[dokku]: https://github.com/progrium/dokku
