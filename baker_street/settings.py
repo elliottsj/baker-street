@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'compressor',
     'baker_street',
 )
 
@@ -104,6 +105,17 @@ STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+# http://django-compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_PRECOMPILERS
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', '/usr/bin/env bundle exec sass --scss {infile} {outfile}'),
+)
 
 # Templates
 # https://docs.djangoproject.com/en/1.7/ref/settings/#template-dirs
