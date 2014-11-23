@@ -1,0 +1,23 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Spencer Elliott -- CTO -- @spe_
+    Jonathan Webb   -- CEO -- @jwebbed
+    Victoria Bukta  -- CFO -- @Victoria_Bukta
+    Eugene Cheung   -- CCO -- @arkon
+
+# THANKS
+
+    Helen Kontozopoulos
+    Mario Grech
+    Donald Henderson
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3, JavaScript
+    jQuery
+    Django, Django REST Framework
+    PostgreSQL
+    Heroku
