@@ -9,7 +9,7 @@ To set up your development environment:
 Once installed, the `pg_config` executable must be on your `PATH`.
 Setup varies by platform; [here are instructions for Postgres.app](http://postgresapp.com/documentation/cli-tools.html)
 
-#### (Optional) Use virtualenv
+#### Use virtualenv
 
 ```shell
 cd baker-street/
@@ -22,6 +22,7 @@ source venv/bin/activate
 
 ```shell
 pip install -r requirements.txt
+bundle install
 ```
 
 #### Migrate the database
