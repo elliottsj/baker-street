@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('word', models.CharField(max_length=255)),
                 ('weight', models.IntegerField()),
-                ('session', models.ForeignKey(to='api.ResearchSession')),
+                ('session', models.ForeignKey(to='baker_street.ResearchSession')),
             ],
             options={
             },
