@@ -226,7 +226,7 @@ class Document(models.Model):
 
     session = models.ForeignKey(ResearchSession)
     page = models.ForeignKey(Page)
-    canlii = models.OneToOneField(CanLIIDocument, primary_key=True)
+    canlii = models.ForeignKey(CanLIIDocument)
 
     def __str__(self):
         return self.title
