@@ -4,10 +4,10 @@ from baker_street.models import Document, Page, ResearchSession, Blacklist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
     AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
-from django import forms
-from django.forms import models
+from django.contrib.auth import forms
 from django.shortcuts import render, redirect
-from rest_framework import permissions, viewsets, status, mixins
+from django.views.decorators.csrf import csrf_protect
+from rest_framework import permissions, viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
 from rest_framework import renderers
@@ -61,17 +61,9 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.get_user_model().objects.all()
     serializer_class = AuthTokenSerializer
 
-    # POST /users/login.json
-    @list_route(methods=['POST'])
-    def login(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.DATA)
-        if serializer.is_valid():
-            token, created = Token.objects.get_or_create(user=serializer.object['user'])
-            return Response({'token': token.key})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # GET /users/register.json
-    @list_route(methods=['GET', 'POST'], renderer_classes=[renderers.TemplateHTMLRenderer, renderers.BrowsableAPIRenderer])
+    # [GET|POST] /users/register.json
+    @list_route(methods=['GET', 'POST'], renderer_classes=[renderers.TemplateHTMLRenderer,
+                                                           renderers.BrowsableAPIRenderer])
     def register(self, request, format=None):
         if request.method == 'POST':
             form = UserCreationForm(request.DATA)
@@ -84,6 +76,31 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response({
             'form': form
         }, template_name='users/register.html')
+
+    # [GET|POST] /users/login.json
+    @list_route(methods=['GET', 'POST'], renderer_classes=[renderers.TemplateHTMLRenderer,
+                                                           renderers.JSONRenderer,
+                                                           renderers.BrowsableAPIRenderer])
+    def login(self, request, format=None):
+        if request.method == 'POST':
+            if format == 'json':
+                # Token-authenticated client is logging in
+                serializer = AuthTokenSerializer(data=request.DATA)
+                if serializer.is_valid():
+                    token, created = Token.objects.get_or_create(user=serializer.object['user'])
+                    return Response({'token': token.key})
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # Session-authenticated client is logging in
+                form = forms.AuthenticationForm(data=request.DATA)
+                if form.is_valid():
+                    auth.login(request, form.get_user())
+                    return redirect('dashboard')
+        else:
+            form = forms.AuthenticationForm()
+        return Response({
+            'form': form
+        }, template_name='users/login.html')
 
     # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])

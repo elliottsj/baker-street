@@ -54,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'baker_street.urls'
@@ -115,9 +115,9 @@ STATICFILES_FINDERS = (
 )
 
 # http://django-compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_PRECOMPILERS
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', '/usr/bin/env bundle exec sass --scss --sourcemap=none {infile} {outfile}'),
-)
+# COMPRESS_PRECOMPILERS = (
+#     ('text/x-scss', '/usr/bin/env bundle exec sass --scss --sourcemap=none {infile} {outfile}'),
+# )
 
 # Templates
 # https://docs.djangoproject.com/en/1.7/ref/settings/#template-dirs
@@ -157,8 +157,8 @@ SUIT_CONFIG = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
