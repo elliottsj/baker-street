@@ -213,21 +213,17 @@ class CanLIIDocument(models.Model):
         # This is a somewhat naive assumption however it will be true in the vast majority of cases
         if search == None:
             raise InvalidDocumentException
-
-
-
-
-            else: #it's legislation
-                input = { 'legislationId' :  model.documentId,
-                          'databaseId' : model.databaseId,
-                          'title' : model.title,
-                          'citation' : '',
-                          'type' : "REGULATION"
-                          }
-                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
-                model.content = legis.content
-                model.url = legis.url
-                model.populate = True
+        else: #it's legislation
+            input = { 'legislationId' :  model.documentId,
+                      'databaseId' : model.databaseId,
+                      'title' : model.title,
+                      'citation' : '',
+                      'type' : "REGULATION"
+                      }
+            legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+            model.content = legis.content
+            model.url = legis.url
+            model.populate = True
 
 
 
