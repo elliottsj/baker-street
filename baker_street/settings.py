@@ -114,7 +114,7 @@ STATICFILES_FINDERS = (
 
 # http://django-compressor.readthedocs.org/en/latest/settings/#django.conf.settings.COMPRESS_PRECOMPILERS
 COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', '/usr/bin/env bundle exec sass --scss {infile} {outfile}'),
+    ('text/x-scss', '/usr/bin/env bundle exec sass --scss --sourcemap=none {infile} {outfile}'),
 )
 
 # Templates
