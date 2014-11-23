@@ -16,7 +16,6 @@ import logging
 import requests
 
 
-
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         """
@@ -41,6 +40,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, True, True,
                               **extra_fields)
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name='first name', max_length=30, blank=True)
     last_name = models.CharField(verbose_name='last name', max_length=30, blank=True)
@@ -51,7 +51,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text='Designates whether this user should be treated as '
                   'active. Unselect this instead of deleting accounts.')
     date_joined = models.DateTimeField(verbose_name='date joined', default=timezone.now)
-
 
     objects = UserManager()
 
@@ -93,6 +92,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
+
 class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -111,6 +111,7 @@ class ResearchSession(models.Model):
     @property
     def current_page(self):
         return Page.objects.get(research_session=self, most_recent=True)
+
 
 class Document(models.Model):
     """A document in the corpus."""
@@ -146,6 +147,7 @@ class Evidence(models.Model):
     corpus_plus_docno = models.CharField(max_length=255)
     file_name = models.CharField(max_length=255)
 
+
 class Page(models.Model):
     """A web page viewed in a ResearchSession."""
     page_url = models.TextField()
@@ -156,7 +158,6 @@ class Page(models.Model):
     snippet = models.BooleanField(default=False)
 
     research_session = models.ForeignKey(ResearchSession)
-
 
 
 class Context(models.Model):
@@ -173,6 +174,7 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
 
 class CanLIIDocument(models.Model):
     title = models.TextField()
