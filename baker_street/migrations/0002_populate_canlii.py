@@ -9,7 +9,7 @@ def populate_canlii(apps, scheme_editor):
     canlii = CanLII('zxxdp6fyt5fatyfv44smrsbw')
     case_dbs = canlii.case_databases()
     legis_dbs = canlii.legislation_databases()
-    CanLIIDocument = apps.get_model('api', 'CanLIIDocument')
+    CanLIIDocument = apps.get_model('baker_street', 'CanLIIDocument')
 
     for db in case_dbs:
         for case in db:
@@ -25,7 +25,7 @@ def populate_canlii(apps, scheme_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0001_initial'),
+        ('baker_street', '0001_initial'),
     ]
 
     operations = [

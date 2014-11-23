@@ -37,11 +37,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
-    'dashboard',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'baker_street',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -152,11 +151,7 @@ REST_FRAMEWORK = {
 
 
 # Custom user model
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'baker_street.User'
 
 # Allow requests from any origin
 CORS_ORIGIN_ALLOW_ALL = True
-
-FIXTURE_DIRS = (
-   '/api/fixtures/',
-)

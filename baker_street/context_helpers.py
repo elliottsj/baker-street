@@ -1,10 +1,10 @@
 ### Algo. For Context ###
+from baker_street.models import VectorSet, CanLIIDocument
 import nltk                 # for natural language and ML
 from operator import itemgetter
 from bs4 import BeautifulSoup # parsing HTML
 import string
 import requests
-from api.models import VectorSet, CanLIIDocument
 from django.db.models import F
 
 # string of symbols and nums
@@ -103,6 +103,3 @@ def getContext(session):
     for query in querys:
         s += " " + query.word
     return s[1:]
-
-
-    

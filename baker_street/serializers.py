@@ -1,4 +1,4 @@
-from api.models import Document, Question, ResearchSession, Page
+from baker_street.models import Document, Question, ResearchSession, Page
 from django.contrib import auth
 from rest_framework import serializers
 

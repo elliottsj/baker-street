@@ -1,4 +1,4 @@
-from api.models import Document, Question
+from baker_street.models import Document, Question
 from django import forms
 from django.contrib import admin
 from django.contrib import auth

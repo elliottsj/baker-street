@@ -1,5 +1,10 @@
+{% load staticfiles %}
+
 {% if user.is_authenticated %}
     <p>Signed in as {{ user.email }}</p>
 {% else %}
     <p>Not signed in</p>
 {% endif %}
+
+
+{% static 'humans.txt' %}

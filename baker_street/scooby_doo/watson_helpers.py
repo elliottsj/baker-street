@@ -1,11 +1,12 @@
-from api.models import CanLIIDocument
+from baker_street.context_helpers import getContext
+from baker_street.models import CanLIIDocument
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
 from bs4 import BeautifulSoup
-from api.exceptions import InvalidDocumentException
-from api.context_helpers import getContext
+from baker_street.exceptions import InvalidDocumentException
 import requests
+
 
 def call_watson(text, session):
     watson = Watson(url='https://watson-wdc01.ihost.com/instance/507/deepqa/v1',
