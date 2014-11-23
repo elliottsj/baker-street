@@ -25,10 +25,16 @@ pip install -r requirements.txt
 bundle install
 ```
 
-#### Migrate the database
+#### Install NLTK data
 
 ```shell
-./manage.py migrate
+python -m nltk.downloader all
+```
+
+#### Sync the database
+
+```shell
+./manage.py syncdb
 ```
 
 #### Start Django
@@ -36,3 +42,20 @@ bundle install
 ```shell
 ./manage.py runserver
 ```
+
+#### Start worker
+
+```shell
+celery -A baker_street worker -l info
+```
+
+## Deploying
+
+We're using [Dokku][dokku] on Amazon Web Services. Add the remote and push to deploy:
+
+```shell
+git remote add dokku dokku@sherlocke.me:sherlocke.me
+git push dokku
+```
+
+[dokku]: https://github.com/progrium/dokku
