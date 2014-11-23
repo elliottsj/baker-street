@@ -221,6 +221,9 @@ class CanLIIDocument(models.Model):
         if search != None: #it's a Statute
             snippet = title[search.regs[0][0]:search.regs[0][1]]
             models = CanLIIDocument.objects.filter(citation=snippet).exclude(repealed=True)
+            # There's a bug here when it's just None and hasen't been loaded yet it could get psoted
+            # even if it's repealed. Should do a loop checking for repealing legislation if length
+            # of models is longer than 1
             model = models[0]
             if not model.populated:
                 input = { 'legislationId' :  model.documentId,
