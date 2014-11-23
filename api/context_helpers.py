@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup # parsing HTML
 import string
 import requests
 from api.models import VectorSet, CanLIIDocument
+from django.db.models import F
 
 # string of symbols and nums
 s = []
@@ -83,13 +84,11 @@ def train(words, session):
         FOR NOW: use weights, and change fix vector to work for our needs
     '''
     # add words to vector
+
     for i in words:
-        results = VectorSet.objects.filter(word=i[0], session=session)
-        if len(results) == 0:
-            VectorSet.objects.create(word=i[0], weight=1, session=session)
-        else:
-            result = results[0]
-            result.weight += 1
+        result, created = VectorSet.objects.get_or_create(word=i[0], session=session, defaults={'weight' : 1})
+        if not created:
+            result.weight = F('weight') + 1
             result.save()
 
 def updateContext(title, session):
