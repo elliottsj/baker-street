@@ -85,11 +85,11 @@ def relevent_words(url, is_url):
     return words
 
 def train(words, session):
-    ''' GOAL: Using clustering using EM cluster data to find context.
+    """ GOAL: Using clustering using EM cluster data to find context.
         This should be improving with add new data with iterations.
 
         FOR NOW: use weights, and change fix vector to work for our needs
-    '''
+    """
 
     words = [word[0] for word in words]
     words = list(set(words))
