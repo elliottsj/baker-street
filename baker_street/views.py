@@ -1,18 +1,25 @@
 from baker_street.context_helpers import updateContext
+from baker_street.forms import UserCreationForm
 from baker_street.models import Document, Page, ResearchSession, Blacklist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
     AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
 from django.contrib import auth
-from django.shortcuts import render
-from rest_framework import permissions, viewsets, status
+from django import forms
+from django.forms import models
+from django.shortcuts import render, redirect
+from rest_framework import permissions, viewsets, status, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
+from rest_framework import renderers
 from rest_framework.response import Response
 from baker_street.scooby_doo.watson_helpers import get_documents
 
 
-def index(request):
-    return render(request, 'dashboard/index.html')
+def dashboard(request):
+    if request.user.is_anonymous():
+        return redirect('user-login')
+    else:
+        return render(request, 'dashboard.html')
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
@@ -30,7 +37,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, format=None):
         document = Document.objects.get(url=request.URL['url'])
-        if (document.research_session != request.user.current_session):
+        if document.research_session != request.user.current_session:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
             document.pinned = True
@@ -50,27 +57,38 @@ class DocumentViewSet(viewsets.ModelViewSet):
 #     serializer_class = QuestionSerializer
 
 
-class AuthViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.get_user_model().objects.all()
     serializer_class = AuthTokenSerializer
 
-    # POST /users/sign_in.json
+    # POST /users/login.json
     @list_route(methods=['POST'])
-    def sign_in(self, request, format=None):
-        serializer = self.serializer_class(data=request.DATA)
+    def login(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.DATA)
         if serializer.is_valid():
             token, created = Token.objects.get_or_create(user=serializer.object['user'])
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # POST /users/register.json
-    # @list_route(methods=['POST'])
-    # def register(self, request, format=None):
-    #     pass
+    # GET /users/register.json
+    @list_route(methods=['GET', 'POST'], renderer_classes=[renderers.TemplateHTMLRenderer, renderers.BrowsableAPIRenderer])
+    def register(self, request, format=None):
+        if request.method == 'POST':
+            form = UserCreationForm(request.DATA)
+            if form.is_valid():
+                # Create the user
+                form.save()
+                return redirect('dashboard')
+        else:
+            form = UserCreationForm()
+        return Response({
+            'form': form
+        }, template_name='users/register.html')
 
-    # DELETE /users/sign_out.json
+    # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
-    def sign_out(self, request, format=None):
+    def logout(self, request, format=None):
+
         pass
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
