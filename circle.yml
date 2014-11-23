@@ -1,0 +1,10 @@
+machine:
+  ruby:
+    version: 2.1.4
+  python:
+    version: 3.4.1
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: baker-street
