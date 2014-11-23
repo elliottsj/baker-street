@@ -220,7 +220,7 @@ class CanLIIDocument(models.Model):
         search = regex.search(title)
         if search != None: #it's a Statute
             snippet = title[search.regs[0][0]:search.regs[0][1]]
-            models = CanLIIDocument.objects.filter(citation=snippet)#.exclude(repealed=True)
+            models = CanLIIDocument.objects.filter(citation=snippet).exclude(repealed=True)
             model = models[0]
             if not model.populated:
                 input = { 'legislationId' :  model.documentId,
