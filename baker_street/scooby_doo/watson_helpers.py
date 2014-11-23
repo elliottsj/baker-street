@@ -1,9 +1,9 @@
-from api.models import CanLIIDocument
+from baker_street.models import CanLIIDocument
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
 from bs4 import BeautifulSoup
-from api.exceptions import InvalidDocumentException
+from baker_street.exceptions import InvalidDocumentException
 import requests
 
 def call_watson(text):
