@@ -25,16 +25,28 @@ pip install -r requirements.txt
 bundle install
 ```
 
-#### Migrate the database
+#### Install NLTK data
 
 ```shell
-./manage.py migrate
+python -m nltk.downloader all
+```
+
+#### Sync the database
+
+```shell
+./manage.py syncdb
 ```
 
 #### Start Django
 
 ```shell
 ./manage.py runserver
+```
+
+#### Start worker
+
+```shell
+celery -A baker_street worker -l info
 ```
 
 ## Deploying
