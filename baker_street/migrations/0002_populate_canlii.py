@@ -41,7 +41,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(populate_canlii),
     ]
-
-
-if __name__ == '__main__':
-    populate_canlii(None, None)
