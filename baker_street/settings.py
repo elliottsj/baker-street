@@ -59,10 +59,15 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'baker_street.urls'
 
+WSGI_APPLICATION = 'baker_street.wsgi.application'
+
+
+# Celery
 # Uncomment line below to allow breakpoints to work in code executed via celery
 # CELERY_ALWAYS_EAGER = True
 
-WSGI_APPLICATION = 'baker_street.wsgi.application'
+# Only accept the pickle serializer
+CELERY_ACCEPT_CONTENT = ['pickle']
 
 
 # Database
