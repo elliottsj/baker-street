@@ -10,7 +10,7 @@ from baker_street.context_helpers import updateContext
 from baker_street.forms import UserCreationForm
 from baker_street.models import Document, Page, ResearchSession, Blacklist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
-    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer
+    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer, UserSerializer
 from baker_street.tasks import populate
 
 
@@ -83,11 +83,13 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.method == 'POST':
             serializer = self.get_serializer(data=request.DATA)
             if serializer.is_valid():
-                auth.login(request, serializer.get_user())
+                user = serializer.get_user()
+                auth.login(request, user)
                 if format == 'html':
                     return redirect('dashboard')
                 else:
-                    return Response(serializer.data)
+                    data = UserSerializer(user).data
+                    return Response(data)
             else:
                 if format == 'html':
                     return Response({
