@@ -65,5 +65,18 @@ git remote add dokku dokku@sherlocke.me:sherlocke.me
 git push dokku
 ```
 
+To proxy requests from *http://sherlocke.me* to *http://baker-street.sherlocke.me*, 
+add `/etc/nginx/conf.d/www.conf`:
+
+```
+server {
+  server_name sherlocke.me;
+
+  location / {
+    proxy_pass http://baker-street.sherlocke.me;
+  }
+}
+```
+
 [dokku]:     https://github.com/progrium/dokku
 [dokku-alt]: https://github.com/dokku-alt/dokku-alt
