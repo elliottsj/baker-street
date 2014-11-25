@@ -31,10 +31,16 @@ bundle install
 python -m nltk.downloader all
 ```
 
-#### Sync the database
+#### Migrate the database
 
 ```shell
-./manage.py syncdb
+./manage.py migrate
+```
+
+#### Load CanLII seed data
+
+```shell
+./load_canlii_documents.sh
 ```
 
 #### Start Django
@@ -51,11 +57,13 @@ celery -A baker_street worker -l info
 
 ## Deploying
 
-We're using [Dokku][dokku] on Amazon Web Services. Add the remote and push to deploy:
+We're using [Dokku Alternative][dokku-alt] on Amazon Web Services. First contact @elliottsj to add your public
+key to the server, then add the remote and push to deploy:
 
 ```shell
 git remote add dokku dokku@sherlocke.me:sherlocke.me
 git push dokku
 ```
 
-[dokku]: https://github.com/progrium/dokku
+[dokku]:     https://github.com/progrium/dokku
+[dokku-alt]: https://github.com/dokku-alt/dokku-alt
