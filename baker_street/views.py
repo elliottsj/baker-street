@@ -2,7 +2,6 @@ from django.contrib import auth
 from django.contrib.auth import forms
 from django.shortcuts import render, redirect
 from rest_framework import permissions, viewsets, status
-from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
 from rest_framework import renderers
 from rest_framework.response import Response
@@ -11,7 +10,7 @@ from baker_street.context_helpers import updateContext
 from baker_street.forms import UserCreationForm
 from baker_street.models import Document, Page, ResearchSession, Blacklist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
-    AuthTokenSerializer, ResearchSessionSerializer, BlacklistSerializer
+    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer
 from baker_street.tasks import populate
 
 
@@ -58,7 +57,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.get_user_model().objects.all()
-    serializer_class = AuthTokenSerializer
+    serializer_class = AuthenticationSerializer
 
     # [GET|POST] /users/register.json
     @list_route(methods=['GET', 'POST'], renderer_classes=[renderers.TemplateHTMLRenderer,
@@ -82,29 +81,29 @@ class UserViewSet(viewsets.GenericViewSet):
                                                            renderers.BrowsableAPIRenderer])
     def login(self, request, format=None):
         if request.method == 'POST':
-            if format == 'json':
-                # Token-authenticated client is logging in
-                serializer = AuthTokenSerializer(data=request.DATA)
-                if serializer.is_valid():
-                    token, created = Token.objects.get_or_create(user=serializer.object['user'])
-                    return Response({'token': token.key})
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # Session-authenticated client is logging in
-                form = forms.AuthenticationForm(data=request.DATA)
-                if form.is_valid():
-                    auth.login(request, form.get_user())
+            serializer = self.get_serializer(data=request.DATA)
+            if serializer.is_valid():
+                auth.login(request, serializer.get_user())
+                if format == 'html':
                     return redirect('dashboard')
+                else:
+                    return Response(serializer.data)
+            else:
+                if format == 'html':
+                    return Response({
+                        'form': forms.AuthenticationForm(data=request.DATA)
+                    }, template_name='users/login.html')
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            form = forms.AuthenticationForm()
-        return Response({
-            'form': form
-        }, template_name='users/login.html')
+            # TODO: return logged-in user for JSON requests
+            return Response({
+                'form': forms.AuthenticationForm()
+            }, template_name='users/login.html')
 
     # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
     def logout(self, request, format=None):
-
         pass
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):

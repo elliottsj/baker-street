@@ -2,6 +2,7 @@ from baker_street.models import Document, Question, ResearchSession, Page
 from django.contrib import auth
 from rest_framework import serializers
 
+
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
@@ -27,7 +28,6 @@ class ResearchSessionSerializer(serializers.ModelSerializer):
         return ResearchSession(**attrs)
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = auth.get_user_model()
@@ -36,45 +36,45 @@ class UserSerializer(serializers.ModelSerializer):
         write_only_fields = ('password',)
 
 
-class AuthTokenSerializer(serializers.Serializer):
+class AuthenticationSerializer(serializers.Serializer):
+    """
+    Base class for authenticating users.
+    """
     email = serializers.EmailField()
     password = serializers.CharField()
 
+    def __init__(self, *args, **kwargs):
+        self.user_cache = None
+        super().__init__(*args, **kwargs)
+
     def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
+        self.user_cache = auth.authenticate(username=attrs['email'],
+                                            password=attrs['password'])
+        if self.user_cache is None:
+            raise serializers.ValidationError(
+                'Please enter a correct email address and password. '
+                'Note that both fields may be case-sensitive.',
+                code='invalid_login'
+            )
+        elif not self.user_cache.is_active:
+            raise serializers.ValidationError(
+                'This account is inactive',
+                code='inactive',
+            )
+        return super().validate(attrs)
 
-        if email and password:
-            user = auth.authenticate(email=email, password=password)
+    def get_user_id(self):
+        if self.user_cache:
+            return self.user_cache.id
+        return None
 
-            if user:
-                if not user.is_active:
-                    msg = 'User account is disabled.'
-                    raise serializers.ValidationError(msg)
-                attrs['user'] = user
-                return attrs
-            else:
-                msg = 'Unable to log in with provided credentials.'
-                raise serializers.ValidationError(msg)
-        else:
-            msg = 'Must include "email" and "password"'
-            raise serializers.ValidationError(msg)
-
-
-class AuthSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(max_length=128, write_only=True)
-    user = UserSerializer(read_only=True)
-    token = AuthTokenSerializer(read_only=True)
-
-    # def restore_object(self, attrs, instance=None):
-    #     return {
-    #
-    #     }
+    def get_user(self):
+        return self.user_cache
 
 
 class PageSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False)
+
     class Meta:
         model = Page
         fields = ('page_url', 'title', 'content', 'most_recent', 'snippet')
@@ -85,4 +85,3 @@ class BlacklistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = ('url',)
-
