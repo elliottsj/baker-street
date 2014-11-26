@@ -98,10 +98,13 @@ class UserViewSet(viewsets.GenericViewSet):
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # TODO: return logged-in user for JSON requests
-            return Response({
-                'form': forms.AuthenticationForm()
-            }, template_name='users/login.html')
+            if format == 'html':
+                return Response({
+                    'form': forms.AuthenticationForm()
+                }, template_name='users/login.html')
+            else:
+                data = UserSerializer(request.user).data
+                return Response(data)
 
     # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
