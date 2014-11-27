@@ -1,5 +1,5 @@
 from django.contrib import auth
-from django.contrib.auth import forms
+from django.contrib.auth import forms, views
 from django.shortcuts import render, redirect
 from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import list_route
@@ -89,14 +89,12 @@ class UserViewSet(viewsets.GenericViewSet):
                     data = UserSerializer(user).data
                     return Response(data)
                 else:
-                    return redirect('dashboard')
+                    return auth.views.login(request._request, template_name='users/login.html')
             else:
                 if format == 'json':
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response({
-                        'form': forms.AuthenticationForm(data=request.DATA)
-                    }, template_name='users/login.html')
+                    return auth.views.login(request._request, template_name='users/login.html')
         else:
             if format == 'json':
                 if request.user.is_authenticated():
@@ -105,9 +103,7 @@ class UserViewSet(viewsets.GenericViewSet):
                 else:
                     return Response('Not authenticated')
             else:
-                return Response({
-                    'form': forms.AuthenticationForm()
-                }, template_name='users/login.html')
+                return auth.views.login(request._request, template_name='users/login.html')
 
     # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])

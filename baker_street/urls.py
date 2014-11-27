@@ -21,6 +21,9 @@ urlpatterns = patterns('',
     # Include routes for logging into the generated documentation site
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
+    # Include OAuth2 routes
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
     # User dashboard page
     url(r'^dashboard/', views.dashboard, name='dashboard'),
 
