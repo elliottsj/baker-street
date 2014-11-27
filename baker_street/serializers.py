@@ -45,6 +45,12 @@ class AuthenticationSerializer(serializers.Serializer):
 
     def __init__(self, *args, **kwargs):
         self.user_cache = None
+
+        # Copy 'username' field into 'email' field
+        if kwargs['data'] and kwargs['data']['username']:
+            kwargs['data'] = kwargs['data'].copy()
+            kwargs['data']['email'] = kwargs['data']['username']
+
         super().__init__(*args, **kwargs)
 
     def validate(self, attrs):
