@@ -85,26 +85,29 @@ class UserViewSet(viewsets.GenericViewSet):
             if serializer.is_valid():
                 user = serializer.get_user()
                 auth.login(request, user)
-                if format == 'html':
-                    return redirect('dashboard')
-                else:
+                if format == 'json':
                     data = UserSerializer(user).data
                     return Response(data)
+                else:
+                    return redirect('dashboard')
             else:
-                if format == 'html':
+                if format == 'json':
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                else:
                     return Response({
                         'form': forms.AuthenticationForm(data=request.DATA)
                     }, template_name='users/login.html')
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            if format == 'html':
+            if format == 'json':
+                if request.user.is_authenticated():
+                    data = UserSerializer(request.user).data
+                    return Response(data)
+                else:
+                    return Response('Not authenticated')
+            else:
                 return Response({
                     'form': forms.AuthenticationForm()
                 }, template_name='users/login.html')
-            else:
-                data = UserSerializer(request.user).data
-                return Response(data)
 
     # DELETE /users/logout.json
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
