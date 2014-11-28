@@ -10,6 +10,7 @@ router.register(r'documents', views.DocumentViewSet)
 router.register(r'research_session', views.ResearchSessionViewSet)
 router.register(r'pages', views.PageViewSet)
 router.register(r'blacklist', views.BlacklistViewSet)
+router.register(r'whitelist', views.WhitelistViewSet)
 
 urlpatterns = patterns('',
     # Redirect root path to marketing site

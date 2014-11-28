@@ -8,9 +8,9 @@ from rest_framework.response import Response
 
 from baker_street.context_helpers import updateContext
 from baker_street.forms import UserCreationForm
-from baker_street.models import Document, Page, ResearchSession, Blacklist
+from baker_street.models import Document, Page, ResearchSession, Blacklist, Whitelist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
-    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer, UserSerializer
+    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer, UserSerializer, WhitelistSerializer
 from baker_street.tasks import populate
 
 
@@ -198,3 +198,17 @@ class BlacklistViewSet(viewsets.ModelViewSet):
         m = request.user.blacklist_set.create(url=request.user)
         serializer = BlacklistSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class WhitelistViewSet(viewsets.ModelViewSet):
+    model = Whitelist
+    serializer_class = WhitelistSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Whitelist.objects.filter(user=self.request.user)
+
+    def create(self, request, format=None):
+        m = request.user.blacklist_set.create(url=request.user)
+        serializer = WhitelistSerializer(m)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

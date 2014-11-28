@@ -277,6 +277,10 @@ class Blacklist(models.Model):
     url = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
+class Whitelist(models.Model):
+    url = models.CharField(max_length=255)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
 class VectorSet(models.Model):
     word = models.CharField(max_length=255, db_index=True)
     weight = models.IntegerField()

@@ -91,3 +91,8 @@ class BlacklistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = ('url',)
+
+class WhitelistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('url',)
