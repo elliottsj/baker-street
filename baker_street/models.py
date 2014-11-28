@@ -204,7 +204,7 @@ class CanLIIDocument(models.Model):
         #This regex is wrong
         regex = re.compile("[A-Z]+( [0-9]{4}(-[0-9]{2})?)?(,)? c (([A-Z]*[0-9]*)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
         search = regex.search(title)
-        if search != None: # it's legislation
+        if search != None: # it's a regulation
             snippet = title[search.regs[0][0]:search.regs[0][1]]
             models = CanLIIDocument.objects.filter(citation=snippet).exclude(repealed=True)
             # There's a bug here when it's just None and hasen't been loaded yet it could get psoted
