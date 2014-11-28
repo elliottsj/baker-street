@@ -9,8 +9,11 @@ router.register(r'users', views.UserViewSet)
 router.register(r'documents', views.DocumentViewSet)
 router.register(r'research_session', views.ResearchSessionViewSet)
 router.register(r'pages', views.PageViewSet)
-router.register(r'blacklist', views.BlacklistViewSet)
-router.register(r'whitelist', views.WhitelistViewSet)
+
+research_session_router = routers.NestedSimpleRouter(router, r'research_session', lookup='research_session')
+research_session_router.register(r'blacklist', views.BlacklistViewSet)
+research_session_router.register(r'whitelist', views.WhitelistViewSet)
+
 
 urlpatterns = patterns('',
     # Redirect root path to marketing site

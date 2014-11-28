@@ -1,4 +1,5 @@
 import logging
+import collections
 from baker_street.exceptions import InvalidDocumentException
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -12,6 +13,22 @@ from pycanlii.legislation import Legislation
 from django.core.exceptions import MultipleObjectsReturned
 import re
 
+class Website(models.Model):
+    url = models.CharField(max_length=255, default="")
+
+class Sitelist(models.Model):
+    websites = models.ManyToManyField(Website)
+
+    def add_site(self, sites):
+        if isinstance(sites, str):
+            w = Website.objects.get_or_create(url=sites)
+            self.objects.add(w)
+            self.save()
+        elif isinstance(sites, collections.Iterable):
+            for site in sites:
+                w = self.objects.get_or_create(url=site)
+                self.objects.add(w)
+            self.save()
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
@@ -50,6 +67,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(verbose_name='date joined', default=timezone.now)
 
     objects = UserManager()
+
+    sitelist = models.OneToOneField(Sitelist)
 
     USERNAME_FIELD = 'email'
 
@@ -95,6 +114,8 @@ class ResearchSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=255)
     current = models.BooleanField(default=False)
+
+    sitelist = models.OneToOneField(Sitelist)
 
     def setCurrentPage(self, new):
         old = Page.objects.filter(research_session=self, most_recent=True)
@@ -208,7 +229,6 @@ class Page(models.Model):
     page_url = models.TextField()
     title = models.TextField(blank=True)
     content = models.TextField(blank=True)
-    website = enum.EnumField(Website, default=Website.NONE)
     most_recent = models.BooleanField(default=False)
     snippet = models.BooleanField(default=False)
 
@@ -251,9 +271,6 @@ class Evidence(models.Model):
     file_name = models.CharField(max_length=255)
 
 
-
-
-
 class Context(models.Model):
     """Key words/strings used to prioritize documents in ResearchSessions."""
     value = models.TextField()
@@ -270,19 +287,10 @@ class Question(models.Model):
         return self.question_text
 
 
-
-
-
-class Blacklist(models.Model):
-    url = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-
-class Whitelist(models.Model):
-    url = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-
 class VectorSet(models.Model):
     word = models.CharField(max_length=255, db_index=True)
     weight = models.IntegerField()
 
     session = models.ForeignKey(ResearchSession)
+
+
