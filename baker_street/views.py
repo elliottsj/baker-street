@@ -8,9 +8,9 @@ from rest_framework.response import Response
 
 from baker_street.context_helpers import updateContext
 from baker_street.forms import UserCreationForm
-from baker_street.models import Document, Page, ResearchSession, Blacklist, Whitelist
+from baker_street.models import Document, Page, ResearchSession, Website, Sitelist
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
-    ResearchSessionSerializer, BlacklistSerializer, AuthenticationSerializer, UserSerializer, WhitelistSerializer
+    ResearchSessionSerializer, AuthenticationSerializer, UserSerializer, WebsiteSerializer
 from baker_street.tasks import populate
 
 
@@ -131,7 +131,8 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
 
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
-            m = request.user.researchsession_set.create()
+            list = Sitelist.objects.create()
+            m = request.user.researchsession_set.create(sitelist=list)
             m.name = request.DATA['name']
             m.save()
             m = request.user.setCurrentSession(m.id)
@@ -186,29 +187,16 @@ class PageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class BlacklistViewSet(viewsets.ModelViewSet):
-    model = Blacklist
-    serializer_class = BlacklistSerializer
+class SitelistViewSet(viewsets.ModelViewSet):
+    model = Website
+    serializer_class = WebsiteSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Blacklist.objects.filter(user=self.request.user)
+        return Website.objects.filter(sitelist=self.request.user.session.sitelist)
 
     def create(self, request, format=None):
-        m = request.user.blacklist_set.create(url=request.user)
-        serializer = BlacklistSerializer(m)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-class WhitelistViewSet(viewsets.ModelViewSet):
-    model = Whitelist
-    serializer_class = WhitelistSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        return Whitelist.objects.filter(user=self.request.user)
-
-    def create(self, request, format=None):
-        m = request.user.blacklist_set.create(url=request.user)
-        serializer = WhitelistSerializer(m)
+        m = request.user.current_session.sitelist.add_site(url=request.user)
+        serializer = WebsiteSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

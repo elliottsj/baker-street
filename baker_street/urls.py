@@ -3,6 +3,7 @@ from django.views.generic.base import RedirectView
 from baker_street import views
 from django.conf.urls import patterns, url, include
 from rest_framework import routers
+from rest_framework_nested import routers as r
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
@@ -10,9 +11,8 @@ router.register(r'documents', views.DocumentViewSet)
 router.register(r'research_session', views.ResearchSessionViewSet)
 router.register(r'pages', views.PageViewSet)
 
-research_session_router = routers.NestedSimpleRouter(router, r'research_session', lookup='research_session')
-research_session_router.register(r'blacklist', views.BlacklistViewSet)
-research_session_router.register(r'whitelist', views.WhitelistViewSet)
+research_session_router = r.NestedSimpleRouter(router, r'research_session', lookup='research_session')
+research_session_router.register(r'sitelist', views.SitelistViewSet)
 
 
 urlpatterns = patterns('',

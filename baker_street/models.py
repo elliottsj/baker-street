@@ -68,8 +68,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    sitelist = models.OneToOneField(Sitelist)
-
     USERNAME_FIELD = 'email'
 
     def setCurrentSession(self, new_id):
@@ -173,6 +171,7 @@ class CanLIIDocument(models.Model):
                 model.content = case.content
                 model.url = case.url
                 model.populated = True
+                model.type = 0
                 model.save()
             return model
 
@@ -197,21 +196,37 @@ class CanLIIDocument(models.Model):
                 model.url = legis.url
                 model.repealed = legis.repealed
                 model.populated = True
+                model.type = 1
+                model.save()
+            return model
+
+        #This regex is wrong
+        regex = re.compile("[A-Z]+( [0-9]{4}(-[0-9]{2})?)?(,)? c (([A-Z]*[0-9]*)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
+        search = regex.search(title)
+        if search != None: # it's legislation
+            snippet = title[search.regs[0][0]:search.regs[0][1]]
+            models = CanLIIDocument.objects.filter(citation=snippet).exclude(repealed=True)
+            # There's a bug here when it's just None and hasen't been loaded yet it could get psoted
+            # even if it's repealed. Should do a loop checking for repealing legislation if length
+            # of models is longer than 1
+            model = models[0]
+            if not model.populated:
+                input = { 'legislationId' :  model.documentId,
+                          'databaseId' : model.databaseId,
+                          'title' : model.title,
+                          'citation' : model.citation,
+                          'type' : "REGULATION"
+                }
+                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+                model.content = legis.content
+                model.url = legis.url
+                model.repealed = legis.repealed
+                model.populated = True
+                model.type = 2
                 model.save()
             return model
 
 
-            # else: #it's legislation
-            #     input = { 'legislationId' :  model.documentId,
-            #               'databaseId' : model.databaseId,
-            #               'title' : model.title,
-            #               'citation' : model.citation,
-            #               'type' : "REGULATION"
-            #               }
-            #     legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
-            #     model.content = legis.content
-            #     model.url = legis.url
-            #     model.populated = True
 
 
         # STILL NEED TO LOOK FOR REGULATIONS

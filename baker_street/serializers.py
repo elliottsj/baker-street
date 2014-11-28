@@ -1,4 +1,4 @@
-from baker_street.models import Document, Question, ResearchSession, Page
+from baker_street.models import Document, Question, ResearchSession, Page, Website, Sitelist
 from django.contrib import auth
 from rest_framework import serializers
 
@@ -87,12 +87,7 @@ class PageSerializer(serializers.ModelSerializer):
         read_only_fields = ('most_recent',)
 
 
-class BlacklistSerializer(serializers.ModelSerializer):
+class WebsiteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Page
-        fields = ('url',)
-
-class WhitelistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Page
+        model = Website
         fields = ('url',)
