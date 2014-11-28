@@ -19,12 +19,15 @@ then initialize the background process:
 
 `celery -A baker_street worker -l info`
 
+1st-party libraries in use:
+- [pycanlii](https://github.com/sherlocke/pycanlii)
+- [pywatson](https://github.com/sherlocke/pywatson)
+
 3rd-party libraries in use:
 
 - [Django](https://www.djangoproject.com/)
 - [Django REST Framework](http://www.django-rest-framework.org/)
 - [Django Suit](http://djangosuit.com/)
-- [pycanlii](https://github.com/sherlocke/pycanlii)
-- [pywatson](https://github.com/sherlocke/pywatson)
+
 
 
