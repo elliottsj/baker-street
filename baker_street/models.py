@@ -22,12 +22,13 @@ class Sitelist(models.Model):
     def add_site(self, sites):
         if isinstance(sites, str):
             w = Website.objects.get_or_create(url=sites)
-            self.objects.add(w)
+            self.websites.add(w[0])
             self.save()
+            return w[0]
         elif isinstance(sites, collections.Iterable):
             for site in sites:
-                w = self.objects.get_or_create(url=site)
-                self.objects.add(w)
+                w = Website.objects.get_or_create(url=site)
+                self.websites.add(w[0])
             self.save()
 
 class UserManager(BaseUserManager):

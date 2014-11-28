@@ -193,10 +193,10 @@ class SitelistViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Website.objects.filter(sitelist=self.request.user.session.sitelist)
+        return Website.objects.filter(sitelist=self.request.user.current_session.sitelist)
 
-    def create(self, request, format=None):
-        m = request.user.current_session.sitelist.add_site(url=request.user)
+    def create(self, request, format=None, research_session_pk=None):
+        m = request.user.current_session.sitelist.add_site(request.DATA["url"])
         serializer = WebsiteSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     # Include the routes registered above
     url(r'^', include(router.urls)),
 
+    url(r'^', include(research_session_router.urls)),
+
     # Include routes for logging into the generated documentation site
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
