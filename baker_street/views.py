@@ -84,8 +84,8 @@ class UserViewSet(viewsets.GenericViewSet):
             serializer = self.get_serializer(data=request.DATA)
             if serializer.is_valid():
                 user = serializer.get_user()
-                auth.login(request, user)
                 if format == 'json':
+                    auth.login(request, user)
                     data = UserSerializer(user).data
                     return Response(data)
                 else:
@@ -109,6 +109,7 @@ class UserViewSet(viewsets.GenericViewSet):
     @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
     def logout(self, request, format=None):
         pass
+
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
     model = ResearchSession
