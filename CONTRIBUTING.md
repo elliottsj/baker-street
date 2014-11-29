@@ -55,6 +55,18 @@ python -m nltk.downloader all
 celery -A baker_street worker -l info
 ```
 
+#### Create an OAuth application for the Chrome Extension
+
+- Open <http://localhost:8000/o/applications/register>
+- Fill out the form:
+  - Name: `sherlocke-chrome-dev`
+  - Client id: `sherlocke-chrome-dev`
+  - Client secret: (leave default)
+  - Client type: Confidential
+  - Authorization grant type: Implicit
+  - Redirect uris: `https://<extension-id>.chromiumapp.org/provider_cb`
+    where `<extension-id>` is the Sherlocke extension ID from <chrome://extensions/>
+
 ## Deploying
 
 We're using [Dokku Alternative][dokku-alt] on Amazon Web Services. First contact @elliottsj to add your public
