@@ -20,6 +20,10 @@ class UserCreationForm(forms.ModelForm):
         widget=forms.PasswordInput,
         help_text="Enter the same password as above, for verification."
     )
+    code = forms.CharField(
+        label="Invite Code",
+        widget=forms.TextInput
+    )
 
     class Meta:
         model = auth.get_user_model()

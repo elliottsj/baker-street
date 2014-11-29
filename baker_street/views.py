@@ -168,6 +168,17 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         serializer = ResearchSessionSerializer(m)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @list_route(methods=["GET", "POST"])
+    def sitelist(self, request, format=None):
+        if request.method == "GET":
+            sites = Website.objects.filter(sitelist=request.user.current_session.sitelist)
+            serializer = WebsiteSerializer(sites, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        elif request.method == "POST":
+            m = request.user.current_session.sitelist.add_site(request.DATA["url"])
+            serializer = WebsiteSerializer(m)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class PageViewSet(viewsets.ModelViewSet):
     model = Page
@@ -202,16 +213,4 @@ class PageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class SitelistViewSet(viewsets.ModelViewSet):
-    model = Website
-    serializer_class = WebsiteSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        return Website.objects.filter(sitelist=self.request.user.current_session.sitelist)
-
-    def create(self, request, format=None, research_session_pk=None):
-        m = request.user.current_session.sitelist.add_site(request.DATA["url"])
-        serializer = WebsiteSerializer(m)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 

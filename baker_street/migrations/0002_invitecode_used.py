@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('baker_street', '0003_sitelist'),
+        ('baker_street', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='sitelist',
-            field=models.OneToOneField(default=0, to='baker_street.Sitelist'),
-            preserve_default=False,
+            model_name='invitecode',
+            name='used',
+            field=models.BooleanField(default=False),
+            preserve_default=True,
         ),
     ]

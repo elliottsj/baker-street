@@ -1,10 +1,11 @@
-from baker_street.models import Document, Question
+from baker_street.models import Document, Question, InviteCode
 from django import forms
 from django.contrib import admin
 from django.contrib import auth
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
+import random
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -92,8 +93,9 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
-class InviteCodeForm(forms.ModelForm):
-    pass
+class InviteCodeAdmin(admin.ModelAdmin):
+    readonly_fields = ('code', 'used')
+    list_display = ('code', 'used')
 
 # Now register the new UserAdmin...
 admin.site.register(auth.get_user_model(), MyUserAdmin)
@@ -104,3 +106,4 @@ admin.site.unregister(Group)
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Document, DocumentAdmin)
+admin.site.register(InviteCode, InviteCodeAdmin)

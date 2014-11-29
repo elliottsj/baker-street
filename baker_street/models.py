@@ -310,14 +310,15 @@ class VectorSet(models.Model):
 
     session = models.ForeignKey(ResearchSession)
 
-class InviteCode(models.Model):
-    code = models.CharField(max_length=16)
-
-    @staticmethod
-    def get_new(self):
+def _get_new():
         s = ''
         for i in range(16):
             s += random.choice("qwertyuiopasdfghjklzxcvbnm")
-        return InviteCode.objects.create(code=s)
+        if InviteCode.objects.filter(code=s).exists():
+            return InviteCode._get_new()
+        return s
 
+class InviteCode(models.Model):
+    code = models.CharField(max_length=16, default=_get_new)
+    used = models.BooleanField(default=False)
 

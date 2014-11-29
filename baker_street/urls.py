@@ -11,9 +11,6 @@ router.register(r'documents', views.DocumentViewSet)
 router.register(r'research_session', views.ResearchSessionViewSet)
 router.register(r'pages', views.PageViewSet)
 
-research_session_router = r.NestedSimpleRouter(router, r'research_session', lookup='research_session')
-research_session_router.register(r'sitelist', views.SitelistViewSet)
-
 
 urlpatterns = patterns('',
     # Redirect root path to marketing site
@@ -21,8 +18,6 @@ urlpatterns = patterns('',
 
     # Include the routes registered above
     url(r'^', include(router.urls)),
-
-    url(r'^', include(research_session_router.urls)),
 
     # Include routes for logging into the generated documentation site
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
