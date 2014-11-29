@@ -1,5 +1,5 @@
-from baker_street.context_helpers import getContext, assertion, text_assertion
-from baker_street.models import CanLIIDocument
+from baker_street.context_helpers import getContext, assertion
+from baker_street.models import CanLIIDocument, Document
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
 from pycanlii.canlii import CanLII
@@ -69,7 +69,8 @@ def backgroundUpdate(session):
         for e in evidence:
             try:
                 document = CanLIIDocument.search(e.title)
-                if document != None:
+                # lazy eval, FUCK YEA
+                if document and len(Document.objects.filter(title=document.title)) == 0:
                     session.document_set.create(title=document.title, url=document.url, pinned=False, content=e.text,
                                                 type=document.type, page=page, canlii=document)
             except requests.exceptions.HTTPError:

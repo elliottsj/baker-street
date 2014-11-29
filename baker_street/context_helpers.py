@@ -142,26 +142,3 @@ def assertion(url, is_url, context, n):
             count += 1
 
     return final
-
-def text_assertion(url, is_url, context, n):
-    # get text
-    import re
-
-    sentences = re.split("\.", url)
-
-    final = []
-    count = 0
-    for s in sentences:
-        for c in context:
-            if c in s:
-                 final.append(s + '.')
-                 count += 1
-            if count >= n:
-                return final
-
-    if count < n:
-        while count < n:
-            final.append(sentences[count] + '.')
-            count += 1
-
-    return final
