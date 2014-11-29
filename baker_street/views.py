@@ -123,11 +123,15 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         """
         POST /research_session handler
         Gets a new research session and returns it
+
         """
         if 'id' in request.DATA:
             m = request.user.setCurrentSession(request.DATA['id'])
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if request.DATA['name'] == 'teapot':
+            return Response(status=418)
 
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
