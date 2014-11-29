@@ -192,7 +192,7 @@ class CanLIIDocument(models.Model):
                           'citation' : model.citation,
                           'type' : "STATUTE"
                 }
-                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+                legis = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
                 model.content = legis.content
                 model.url = legis.url
                 model.repealed = legis.repealed
@@ -201,8 +201,8 @@ class CanLIIDocument(models.Model):
                 model.save()
             return model
 
-        #This regex is wrong
-        regex = re.compile("[A-Z]+( [0-9]{4}(-[0-9]{2})?)?(,)? c (([A-Z]*[0-9]*)|([A-Z]+\.[0-9]+)|([A-Z]+-[0-9]+\.[0-9]+))")
+        #This regex ~88% of the time, AKA good enough for now
+        regex = re.compile("\w(?=((?:[Q][^.](?=( ?))\2)*))\1(?=((?:\w(?=( ?))\4(?=((?:[1](?=( ?))\6)*))\5)?))\3(?=([\-]*))\7(?=((?:(?=(\w*))\9(?=( ?))\10[^D]\w(?=(1*))\11(?=([Q]*))\12)?))\8(?=((?:\w(?=((?:(?=((?:(?=( ?))\16(?=(\)?))\17(?=((?:[1][^D])*))\18)*))\15\w)*))\14)*))\13[^J]\d(?=((?:(?=((?:(?=(\w*))\21(?=((?:[^D](?=(\d?))\23[^D])?))\22)*))\20(?=([^ ]?))\24[^D])?))\19[^D](?=(\w*))\25(?=([^D]*))\26")
         search = regex.search(title)
         if search != None: # it's a regulation
             snippet = title[search.regs[0][0]:search.regs[0][1]]
@@ -218,7 +218,7 @@ class CanLIIDocument(models.Model):
                           'citation' : model.citation,
                           'type' : "REGULATION"
                 }
-                legis  = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
+                legis = Legislation(input, "zxxdp6fyt5fatyfv44smrsbw")
                 model.content = legis.content
                 model.url = legis.url
                 model.repealed = legis.repealed
