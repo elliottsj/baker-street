@@ -55,10 +55,17 @@ def backgroundUpdate(session):
     page = session.current_page
     context = getContext(session)
     if page.content != "":
-        questions = assertion(page.content, False, context, calls)
+        questions = assertion(page.content, context, calls)
     else:
         canliipage = CanLIIDocument.search(page.title)
-        questions = assertion(canliipage.content, False, context, calls)
+        if canliipage.type == 0:
+            t = BeautifulSoup(canliipage.content)
+            text = t.find(id='originalDocument').getText()
+        else:
+            t = BeautifulSoup(canliipage.content)
+            text = t.find(id='canliidocumentontent').getText()
+
+        questions = assertion(text, context, calls)
 
 
     for text in questions:

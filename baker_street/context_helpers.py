@@ -114,16 +114,7 @@ def getContext(session):
         s += " " + query.word
     return s[1:]
 
-def assertion(url, is_url, context, n):
-    # get text
-    if is_url:
-        html = requests.get(url).text
-        soup = BeautifulSoup(html).getText
-    else:
-        soup = BeautifulSoup(url)
-
-    text = soup.getText().replace("\n", "").replace("\t", "")
-
+def assertion(text, context, n):
     sentences = re.split("\.", text)
 
     final = []
