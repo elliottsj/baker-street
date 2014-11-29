@@ -112,22 +112,8 @@ class ResearchSession(models.Model):
     """A sequence of pinned Pages and prioritized Contexts"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=255)
-    current = models.BooleanField(default=False)
 
     sitelist = models.OneToOneField(Sitelist)
-
-    def setCurrentPage(self, new):
-        old = Page.objects.filter(research_session=self, most_recent=True)
-        if (len(old) == 1):
-            old[0].most_recent = False
-            old[0].save()
-        new.most_recent = True
-        new.save()
-        return new
-
-    @property
-    def current_page(self):
-        return Page.objects.get(research_session=self, most_recent=True)
 
 class CanLIIDocument(models.Model):
     title = models.TextField()

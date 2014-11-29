@@ -18,8 +18,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ResearchSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResearchSession
-        fields = ('name', 'id', 'current')
-        read_only_fields = ('id', 'current')
+        fields = ('name', 'id', 'user')
+        read_only_fields = ('id', 'user')
 
     def restore_object(self, attrs, instance=None):
         if instance is not None:

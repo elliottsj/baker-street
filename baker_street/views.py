@@ -144,6 +144,11 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
     serializer_class = ResearchSessionSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
+    def list(self, request, format=None):
+        if not request.user.is_superuser:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return super(ResearchSessionViewSet, self).list(request, format)
+
 class PageViewSet(viewsets.ModelViewSet):
     model = Page
     serializer_class = PageSerializer
