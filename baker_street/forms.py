@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import auth
+from baker_street.models import InviteCode
 
 
 class UserCreationForm(forms.ModelForm):
@@ -10,7 +11,13 @@ class UserCreationForm(forms.ModelForm):
     error_messages = {
         'duplicate_email': "A user with that email address already exists.",
         'password_mismatch': "The two password fields didn't match.",
+        'invalid_key' : "This invite code is not valid",
+        'used_key' : "This invite code has already been used"
     }
+    invcode = forms.CharField(
+        label="Invite Code",
+        widget=forms.TextInput
+    )
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput
@@ -20,10 +27,7 @@ class UserCreationForm(forms.ModelForm):
         widget=forms.PasswordInput,
         help_text="Enter the same password as above, for verification."
     )
-    code = forms.CharField(
-        label="Invite Code",
-        widget=forms.TextInput
-    )
+
 
     class Meta:
         model = auth.get_user_model()
@@ -39,9 +43,31 @@ class UserCreationForm(forms.ModelForm):
             )
         return password2
 
+    def clean_invcode(self):
+        invcode = self.cleaned_data.get("invcode")
+        lookup = InviteCode.objects.filter(code=invcode)
+        if len(lookup) == 0:
+            raise forms.ValidationError(
+                self.error_messages['invalid_key'],
+                code='invalid_key'
+            )
+        elif lookup[0].used == True:
+            raise forms.ValidationError(
+                self.error_messages['used_key'],
+                code='used_key'
+            )
+        else:
+            return invcode
+
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+
+        lookup = InviteCode.objects.get(code=self.cleaned_data["invcode"])
+        lookup.used = True
+        lookup.save()
+
         if commit:
             user.save()
         return user
