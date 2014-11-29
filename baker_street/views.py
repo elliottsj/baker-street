@@ -43,6 +43,19 @@ class DocumentViewSet(viewsets.ModelViewSet):
             serializer = DocumentSerializer(document)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def destroy(self, request, format=None):
+        document = Document.objects.get(url=request.URL['url'])
+        if document.research_session != request.user.current_session:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            if not document.pinned:
+                serializer = DocumentSerializer(document)
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            document.pinned = False
+            document.save()
+            serializer = DocumentSerializer(document)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
     @list_route(methods=["GET"])
     def pinned(self, request, format=None):
         documents = Document.objects.filter(pinned=True, session=request.user.current_session)
@@ -130,7 +143,6 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
             list = Sitelist.objects.create()
@@ -141,6 +153,14 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, format=None):
+        session = ResearchSessionSerializer(id=request.DATA['id'])
+        if session.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            session.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @list_route(methods=["GET"])
     def current(self, request, format=None):
