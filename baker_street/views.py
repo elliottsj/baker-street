@@ -113,13 +113,15 @@ class UserViewSet(viewsets.GenericViewSet):
                 return auth.views.login(request._request, template_name='users/login.html')
 
     # DELETE /users/logout.json
-    @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated])
+    @list_route(methods=['DELETE'], permission_classes=[permissions.IsAuthenticated,])
     def logout(self, request, format=None):
         pass
 
-    @detail_route(methods=['GET', 'POST'], permission_classes=[permissions.IsAuthenticated])
+    @detail_route(methods=['GET', 'POST'], permission_classes=(permissions.IsAuthenticated,))
     def researchsessions(self, request, pk=None, format=None):
-        if request.method == 'GET':
+        if request.user.pk != pk:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        elif request.method == 'GET':
             set = ResearchSession.objects.filter(user=pk)
             serializer = ResearchSessionSerializer(set, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
