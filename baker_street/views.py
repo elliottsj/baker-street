@@ -2,13 +2,13 @@ from django.contrib import auth
 from django.contrib.auth import forms, views
 from django.shortcuts import render, redirect
 from rest_framework import permissions, viewsets, status
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework import renderers
 from rest_framework.response import Response
 
 from baker_street.context_helpers import updateContext
 from baker_street.forms import UserCreationForm
-from baker_street.models import Document, Page, ResearchSession, Website, Sitelist
+from baker_street.models import Document, Page, ResearchSession, Website, Sitelist, User
 from baker_street.serializers import DocumentSerializer, PageSerializer, \
     ResearchSessionSerializer, AuthenticationSerializer, UserSerializer, WebsiteSerializer
 from baker_street.tasks import populate
@@ -61,12 +61,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
         documents = Document.objects.filter(pinned=True, session=request.user.current_session)
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-# class QuestionViewSet(viewsets.ModelViewSet):
-#     """API endpoint that allows groups to be viewed or edited"""
-#     queryset = Question.objects.all()
-#     serializer_class = QuestionSerializer
-
 
 class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.get_user_model().objects.all()
@@ -123,51 +117,30 @@ class UserViewSet(viewsets.GenericViewSet):
     def logout(self, request, format=None):
         pass
 
+    @detail_route(methods=['GET', 'POST'], permission_classes=[permissions.IsAuthenticated])
+    def researchsessions(self, request, pk=None, format=None):
+        if request.method == 'GET':
+            set = ResearchSession.objects.filter(user=pk)
+            serializer = ResearchSessionSerializer(set, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        elif request.method == 'POST':
+            serializer = ResearchSessionSerializer(data=request.DATA)
+            if (serializer.is_valid()):
+                list = Sitelist.objects.create()
+                user = User.objects.get(pk=pk)
+                m = user.researchsession_set.create(sitelist=list)
+                m.name = request.DATA['name']
+                m.save()
+                m = request.user.setCurrentSession(m.id)
+                serializer = ResearchSessionSerializer(m)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ResearchSessionViewSet(viewsets.ModelViewSet):
     model = ResearchSession
     serializer_class = ResearchSessionSerializer
     permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        return ResearchSession.objects.filter(user=self.request.user)
-
-    def create(self, request, format=None):
-        """
-        POST /research_session handler
-        Gets a new research session and returns it
-
-        """
-        if 'id' in request.DATA:
-            m = request.user.setCurrentSession(request.DATA['id'])
-            serializer = ResearchSessionSerializer(m)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        serializer = ResearchSessionSerializer(data=request.DATA)
-        if (serializer.is_valid()):
-            list = Sitelist.objects.create()
-            m = request.user.researchsession_set.create(sitelist=list)
-            m.name = request.DATA['name']
-            m.save()
-            m = request.user.setCurrentSession(m.id)
-            serializer = ResearchSessionSerializer(m)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, format=None):
-        session = ResearchSessionSerializer(id=request.DATA['id'])
-        if session.user != request.user:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        else:
-            session.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @list_route(methods=["GET"])
-    def current(self, request, format=None):
-        m = request.user.current_session
-        serializer = ResearchSessionSerializer(m)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class PageViewSet(viewsets.ModelViewSet):
     model = Page
