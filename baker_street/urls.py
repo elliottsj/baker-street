@@ -8,7 +8,7 @@ from rest_framework_nested import routers as r
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
 router.register(r'documents', views.DocumentViewSet)
-router.register(r'research_session', views.ResearchSessionViewSet)
+router.register(r'research_sessions', views.ResearchSessionViewSet)
 router.register(r'pages', views.PageViewSet)
 
 
