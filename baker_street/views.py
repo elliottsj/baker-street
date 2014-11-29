@@ -147,7 +147,8 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
     def list(self, request, format=None):
         if not request.user.is_superuser:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        return super(ResearchSessionViewSet, self).list(request, format)
+        else:
+            return super(ResearchSessionViewSet, self).list(request, format=format)
 
     def retrieve(self, request, pk=None, format=None):
         session = ResearchSession.objects.get(pk=pk)
@@ -156,6 +157,27 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         else:
             serializer = ResearchSessionSerializer(session)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None, format=None):
+        session = ResearchSession.objects.get(pk=pk)
+        if session.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return super(ResearchSessionViewSet, self).update(request, pk=pk, format=format)
+
+    def partial_update(self, request, pk=None, format=None):
+        session = ResearchSession.objects.get(pk=pk)
+        if session.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return super(ResearchSessionViewSet, self).partial_update(request, pk=pk, format=format)
+
+    def delete(self, request, pk=None, format=None):
+        session = ResearchSession.objects.get(pk=pk)
+        if session.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return super(ResearchSessionViewSet, self).delete(request, pk=pk, format=format)
 
 class PageViewSet(viewsets.ModelViewSet):
     model = Page
