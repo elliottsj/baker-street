@@ -119,7 +119,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @detail_route(methods=['GET', 'POST'], permission_classes=(permissions.IsAuthenticated,))
     def researchsessions(self, request, pk=None, format=None):
-        if request.user.pk != int(pk) and not request.user.is_superuser:
+        if request.user.pk != int(pk):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         elif request.method == 'GET':
             set = ResearchSession.objects.filter(user=pk)
@@ -148,6 +148,14 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
         if not request.user.is_superuser:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return super(ResearchSessionViewSet, self).list(request, format)
+
+    def retrieve(self, request, pk=None, format=None):
+        session = ResearchSession.objects.get(pk=pk)
+        if session.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            serializer = ResearchSessionSerializer(session)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 class PageViewSet(viewsets.ModelViewSet):
     model = Page
