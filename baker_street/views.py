@@ -62,11 +62,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
         serializer = DocumentSerializer(documents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# class QuestionViewSet(viewsets.ModelViewSet):
-#     """API endpoint that allows groups to be viewed or edited"""
-#     queryset = Question.objects.all()
-#     serializer_class = QuestionSerializer
-
 
 class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.get_user_model().objects.all()
