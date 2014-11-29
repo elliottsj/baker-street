@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import baker_street.models
 
 
 class Migration(migrations.Migration):
@@ -11,10 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='invitecode',
-            name='used',
-            field=models.BooleanField(default=False),
+            name='code',
+            field=models.CharField(max_length=16, default=baker_street.models._get_new),
             preserve_default=True,
         ),
     ]

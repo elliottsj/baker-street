@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import django.utils.timezone
-import baker_street.models
 from django.conf import settings
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -17,18 +16,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('password', models.CharField(verbose_name='password', max_length=128)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(default=django.utils.timezone.now, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, verbose_name='superuser status', help_text='Designates that this user has all permissions without explicitly assigning them.')),
-                ('first_name', models.CharField(verbose_name='first name', max_length=30, blank=True)),
-                ('last_name', models.CharField(verbose_name='last name', max_length=30, blank=True)),
-                ('email', models.EmailField(verbose_name='email address', unique=True, max_length=75)),
-                ('is_staff', models.BooleanField(default=False, verbose_name='staff status', help_text='Designates whether the user can log into this admin site.')),
-                ('is_active', models.BooleanField(default=True, verbose_name='active', help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.')),
+                ('is_superuser', models.BooleanField(help_text='Designates that this user has all permissions without explicitly assigning them.', default=False, verbose_name='superuser status')),
+                ('first_name', models.CharField(blank=True, max_length=30, verbose_name='first name')),
+                ('last_name', models.CharField(blank=True, max_length=30, verbose_name='last name')),
+                ('email', models.EmailField(verbose_name='email address', max_length=75, unique=True)),
+                ('is_staff', models.BooleanField(help_text='Designates whether the user can log into this admin site.', default=False, verbose_name='staff status')),
+                ('is_active', models.BooleanField(help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', default=True, verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('groups', models.ManyToManyField(related_name='user_set', help_text='The groups this user belongs to. A user will get all permissions granted to each of his/her group.', related_query_name='user', to='auth.Group', verbose_name='groups', blank=True)),
-                ('user_permissions', models.ManyToManyField(related_name='user_set', help_text='Specific permissions for this user.', related_query_name='user', to='auth.Permission', verbose_name='user permissions', blank=True)),
+                ('groups', models.ManyToManyField(blank=True, to='auth.Group', verbose_name='groups', related_query_name='user', help_text='The groups this user belongs to. A user will get all permissions granted to each of his/her group.', related_name='user_set')),
+                ('user_permissions', models.ManyToManyField(blank=True, to='auth.Permission', verbose_name='user permissions', related_query_name='user', help_text='Specific permissions for this user.', related_name='user_set')),
             ],
             options={
                 'abstract': False,
@@ -38,13 +37,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CanLIIDocument',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('title', models.TextField()),
                 ('documentId', models.CharField(max_length=64)),
                 ('databaseId', models.CharField(max_length=64)),
                 ('type', models.IntegerField(db_index=True)),
                 ('populated', models.BooleanField(default=False)),
-                ('url', models.CharField(max_length=255, blank=True)),
+                ('url', models.CharField(blank=True, max_length=255)),
                 ('content', models.TextField(blank=True)),
                 ('repealed', models.NullBooleanField(default=None)),
                 ('citation', models.CharField(max_length=255, db_index=True)),
@@ -56,7 +55,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Context',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('value', models.TextField()),
             ],
             options={
@@ -66,14 +65,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Document',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('publish_date', models.DateField(null=True)),
                 ('url', models.CharField(max_length=255)),
                 ('pinned', models.BooleanField(default=False)),
                 ('content', models.TextField()),
                 ('type', models.IntegerField()),
-                ('source', models.CharField(default='CanLII', max_length=255)),
+                ('source', models.CharField(max_length=255, default='CanLII')),
                 ('canlii', models.ForeignKey(to='baker_street.CanLIIDocument')),
             ],
             options={
@@ -83,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Evidence',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('copyright', models.CharField(max_length=255)),
                 ('external_id', models.CharField(max_length=255)),
@@ -105,8 +104,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='InviteCode',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('code', models.CharField(default=baker_street.models._get_new, max_length=16)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('code', models.CharField(max_length=16, default='')),
+                ('used', models.BooleanField(default=False)),
             ],
             options={
             },
@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Page',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('page_url', models.TextField()),
                 ('title', models.TextField(blank=True)),
                 ('content', models.TextField(blank=True)),
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('question_text', models.TextField()),
                 ('document', models.ForeignKey(to='baker_street.Document', null=True)),
             ],
@@ -140,7 +140,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ResearchSession',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('current', models.BooleanField(default=False)),
             ],
@@ -151,7 +151,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Sitelist',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
             ],
             options={
             },
@@ -160,7 +160,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='VectorSet',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('word', models.CharField(max_length=255, db_index=True)),
                 ('weight', models.IntegerField()),
                 ('session', models.ForeignKey(to='baker_street.ResearchSession')),
@@ -172,8 +172,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Website',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('url', models.CharField(default='', max_length=255)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('url', models.CharField(max_length=255, default='')),
             ],
             options={
             },
