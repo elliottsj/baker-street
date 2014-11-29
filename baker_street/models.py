@@ -12,6 +12,7 @@ from pycanlii.case import Case
 from pycanlii.legislation import Legislation
 from django.core.exceptions import MultipleObjectsReturned
 import re
+import random
 
 class Website(models.Model):
     url = models.CharField(max_length=255, default="")
@@ -308,5 +309,15 @@ class VectorSet(models.Model):
     weight = models.IntegerField()
 
     session = models.ForeignKey(ResearchSession)
+
+class InviteCode(models.Model):
+    code = models.CharField(max_length=16)
+
+    @staticmethod
+    def get_new(self):
+        s = ''
+        for i in range(16):
+            s += random.choice("qwertyuiopasdfghjklzxcvbnm")
+        return InviteCode.objects.create(code=s)
 
 

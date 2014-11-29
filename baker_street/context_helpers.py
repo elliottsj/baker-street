@@ -118,13 +118,36 @@ def assertion(url, is_url, context, n):
     # get text
     if is_url:
         html = requests.get(url).text
+        soup = BeautifulSoup(html).getText
     else:
-        html = url
+        soup = BeautifulSoup(url)
 
-    soup = BeautifulSoup(html)
-    text = soup.body.getText().replace("\n", "").replace("\t", "")
+    text = soup.getText().replace("\n", "").replace("\t", "")
 
     sentences = re.split("\.", text)
+
+    final = []
+    count = 0
+    for s in sentences:
+        for c in context:
+            if c in s:
+                 final.append(s + '.')
+                 count += 1
+            if count >= n:
+                return final
+
+    if count < n:
+        while count < n:
+            final.append(sentences[count] + '.')
+            count += 1
+
+    return final
+
+def text_assertion(url, is_url, context, n):
+    # get text
+    import re
+
+    sentences = re.split("\.", url)
 
     final = []
     count = 0

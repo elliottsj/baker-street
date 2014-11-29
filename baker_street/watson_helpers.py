@@ -1,4 +1,4 @@
-from baker_street.context_helpers import getContext, assertion
+from baker_street.context_helpers import getContext, assertion, text_assertion
 from baker_street.models import CanLIIDocument
 from pywatson.watson import Watson
 from pywatson.question.watson_question import WatsonQuestion
@@ -53,11 +53,13 @@ def backgroundUpdate(session):
     items = 3 # Constant number of items
 
     page = session.current_page
-    canliipage = CanLIIDocument.search(page.title)
-    content = canliipage.content
     context = getContext(session)
+    if page.content != "":
+        questions = assertion(page.content, False, context, calls)
+    else:
+        canliipage = CanLIIDocument.search(page.title)
+        questions = assertion(canliipage.content, False, context, calls)
 
-    questions = assertion(content, False, context, calls)
 
     for text in questions:
         question = WatsonQuestion(text, formatted_answer=True, items=items, context=context,
@@ -69,7 +71,7 @@ def backgroundUpdate(session):
                 document = CanLIIDocument.search(e.title)
                 if document != None:
                     session.document_set.create(title=document.title, url=document.url, pinned=False, content=e.text,
-                                                type=document.type, page=page, canlii=canliipage)
+                                                type=document.type, page=page, canlii=document)
             except requests.exceptions.HTTPError:
                 pass
 

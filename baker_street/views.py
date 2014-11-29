@@ -180,21 +180,14 @@ class PageViewSet(viewsets.ModelViewSet):
     def create(self, request, format=None):
         #serializer = PageSerializer(data=request.DATA)
         session = request.user.current_session
-        m = Page.objects.filter(research_session=session, title=request.DATA["title"], page_url=request.DATA["page_url"])
-        if (len(m) == 1):
-            updateContext(request.DATA["title"], session)
-            m = session.setCurrentPage(m[0])
-            populate.delay(session)
-            serializer = PageSerializer(m)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"],
-                                        content=request.DATA["content"])
-            m = session.setCurrentPage(m)
-            populate.delay(session)
-            serializer = PageSerializer(m)
-            updateContext(request.DATA["title"], session)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        m = session.page_set.create(title=request.DATA["title"], page_url=request.DATA["page_url"],
+                                    content=request.DATA["content"])
+        m = session.setCurrentPage(m)
+        populate.delay(session)
+        serializer = PageSerializer(m)
+        updateContext(request.DATA["title"], session)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @list_route(methods=["GET"])
     def current(self, request, format=None):

@@ -92,6 +92,9 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+class InviteCodeForm(forms.ModelForm):
+    pass
+
 # Now register the new UserAdmin...
 admin.site.register(auth.get_user_model(), MyUserAdmin)
 # ... and, since we're not using Django's built-in permissions,
