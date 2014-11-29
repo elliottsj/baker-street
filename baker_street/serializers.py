@@ -47,7 +47,7 @@ class AuthenticationSerializer(serializers.Serializer):
         self.user_cache = None
 
         # Copy 'username' field into 'email' field
-        if 'data' in kwargs and 'username' in kwargs['data']:
+        if 'data' in kwargs and kwargs['data'] and 'username' in kwargs['data']:
             kwargs['data'] = kwargs['data'].copy()
             kwargs['data']['email'] = kwargs['data']['username']
 

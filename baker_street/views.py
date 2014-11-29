@@ -119,7 +119,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @detail_route(methods=['GET', 'POST'], permission_classes=(permissions.IsAuthenticated,))
     def researchsessions(self, request, pk=None, format=None):
-        if request.user.pk != pk:
+        if request.user.pk != int(pk):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         elif request.method == 'GET':
             set = ResearchSession.objects.filter(user=pk)
