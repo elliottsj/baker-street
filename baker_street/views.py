@@ -130,8 +130,6 @@ class ResearchSessionViewSet(viewsets.ModelViewSet):
             serializer = ResearchSessionSerializer(m)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        if request.DATA['name'] == 'coffee':
-            return Response(status=418)
 
         serializer = ResearchSessionSerializer(data=request.DATA)
         if (serializer.is_valid()):
