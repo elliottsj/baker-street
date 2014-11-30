@@ -1,5 +1,58 @@
-html {
-  body {
-    height: 100%;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #e8eeef;
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+
+/* Login/register forms */
+
+#form {
+  border: 1px solid #e8eeef;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px #bbb;
+  color: #e8eeef;
+  margin: 2em auto;
+  width: 280px;
+}
+
+  input[type='submit'] {
+    background-color: #e8eeef;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px #a8a8a8;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    font-family: 'Open Sans', Arial, sans-serif;
+    margin: 1em auto 0;
+    padding: 0.75em 1.5em;
+    height: 3em;
+    width: 10em;
+    text-align: center;
+  }
+
+  #form-header {
+    background: #e8eeef url('../images/logo_white_name.png') no-repeat center center;
+    background-size: auto 45px;
+    height: 110px;
+  }
+
+  #form-contents {
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+    padding: 2em;
+    text-align: center;
+  }

@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post" action="{% url 'user-register' %}">
-  {% csrf_token %}
-  {{ form }}
-  <input type="submit" value="Submit">
+<form id="form" method="post" action="{% url 'user-register' %}">
+  <div id="form-header"></div>
+  <div id="form-contents">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+  </div>
 </form>
 {% endblock %}
