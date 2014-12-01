@@ -103,6 +103,8 @@ def train(words, session):
 
 def updateContext(title, session):
     document = CanLIIDocument.search(title)
+    if document == None:
+        return
     train(relevent_words(document.content, False), session)
 
 def getContext(session):
