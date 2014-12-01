@@ -8,6 +8,7 @@ from baker_street.exceptions import InvalidDocumentException
 import requests
 
 
+
 watson = Watson(url='https://watson-wdc01.ihost.com/instance/507/deepqa/v1',
                     username='ut_student5', password='9JwXacPH')
 
@@ -54,9 +55,7 @@ def backgroundUpdate(session):
 
     page = session.current_page
     context = getContext(session)
-    if page.content != "":
-        questions = assertion(page.content, context, calls)
-    elif "canlii" in page.page_url.lower():
+    if "canlii" in page.page_url.lower() or page.content == "":
         canliipage = CanLIIDocument.search(page.title)
         if canliipage.type == 0:
             t = BeautifulSoup(canliipage.content)
@@ -66,9 +65,11 @@ def backgroundUpdate(session):
             text = t.find(id='canliidocumentontent').getText()
 
         questions = assertion(text, context, calls)
+    else:
+        questions = assertion(page.content, context, calls)
 
 
-    for text in questions:
+    for text in set(questions):
         question = WatsonQuestion(text, formatted_answer=True, items=items, context=context,
                                     evidence_request= { "items": 2, "profile" : "yes"})
         answer = watson.ask_question(text, question=question)
@@ -77,7 +78,7 @@ def backgroundUpdate(session):
             try:
                 document = CanLIIDocument.search(e.title)
                 # lazy eval, FUCK YEA
-                if document and len(Document.objects.filter(title=document.title)) == 0:
+                if document and len(Document.objects.filter(title=document.title, page=page)) == 0:
                     d = session.document_set.create(title=document.title, url=document.url, pinned=False, content=e.text,
                                                 type=document.type, page=page, canlii=document)
                     Question.objects.create(question_text=text, document=d)
