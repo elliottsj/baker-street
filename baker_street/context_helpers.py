@@ -118,7 +118,8 @@ def getContext(session):
 
 def assertion(text, context, n):
     sentences = re.split("\.", text)
-
+    context = context.split()
+    
     final = []
     count = 0
     for s in sentences:
