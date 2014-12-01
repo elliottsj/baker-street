@@ -56,7 +56,7 @@ def backgroundUpdate(session):
     context = getContext(session)
     if page.content != "":
         questions = assertion(page.content, context, calls)
-    else:
+    elif "canlii" in page.page_url.lower():
         canliipage = CanLIIDocument.search(page.title)
         if canliipage.type == 0:
             t = BeautifulSoup(canliipage.content)
