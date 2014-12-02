@@ -26,6 +26,12 @@ for d in range(len(string.digits) - 1):
 # vector of classified words
 vector = {}
 
+def displayedContent(item):
+    if item.parent.name in ['style', 'script', '[document]', 'head', 'title']:
+        return False
+    elif re.match('<!--.*-->', str(item)):
+        return False
+    return True
 
 def relevent_words(url, is_url):
     '''
@@ -42,7 +48,9 @@ def relevent_words(url, is_url):
     else:
         html = url
 
+    # remove bad text
     soup = BeautifulSoup(html)
+    [s.extract() for s in soup(['style', 'script', '[document]', 'head', 'title'])]
     text = soup.body.getText()
 
     # classify text
@@ -51,30 +59,12 @@ def relevent_words(url, is_url):
 
     # collect terms that are the following
     types = ['NN', 'NNP', 'NNPS', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBP']
-    words = []
-    [words.append(i) for i in tagged if i[1] in types]
-
-    # remove some unwanted words
-    # fix this later :P
-    bad_words= ['css', 'DOCTYPE', 'html', 'nbsp', 'rdquo', 'Code/footer', 'bsp',
-                'htmlsync', 'Times', 'New', 'Roman', 'margin', 'link', 'jQuery',
-                'setReflexRecordNoteupCountText', 'line', 'ol','ul', 'var', 'lang',
-                'class', 'linkCount', 'title', 'closeButton', 'closeButtonSkin',
-                'documentMeta', 'click', 'function', 'toSelect', 'tf', 'selectText',
-                'toSelect', 'toSelect', 'callReflexRecordNoteupCount',
-                'toggleContent', 'decisionHeadnotes', 'noteupCountUrl', 'document',
-                'getTipTitleString', 'documents', 'Home', 'rsaquo', 'ldquo', 'lt',
-                'gt', 'https', 'http', 'g', 's', 'End', 'Piwik','followScroll',
-                'notHighlighted', 'Act', 'as', 'As', 'In', 'in', 'CanLII', 'be',
-                'had', 'process', 'hearing', 'plaintiff', 'case', 'are', 'did',
-                'rsquo', 'Data', 'do', 'No', 'ESRTW', 'been', 'page', 'was',
-                'reflex', 'were', 'have']
-    new_words = []
-    [new_words.append(i) for i in words if i[0] not in bad_words]
+    wordZ = []
+    [wordZ.append(i) for i in tagged if i[1] in types]
 
     # remove words with symbols and numbers
     words = []
-    for i in new_words:
+    for i in wordZ:
         nope = 0
         for j in s:
             if j in i[0]:
@@ -136,3 +126,10 @@ def assertion(text, context, n):
             count += 1
 
     return final
+
+if __name__ == '__main__':
+    print(relevent_words('http://en.wikipedia.org/wiki/Wikipedia', True))
+
+
+
+
