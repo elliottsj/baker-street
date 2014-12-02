@@ -26,7 +26,6 @@ source venv/bin/activate
 
 ```shell
 pip install -r requirements.txt
-bundle install
 ```
 
 #### Install NLTK data
