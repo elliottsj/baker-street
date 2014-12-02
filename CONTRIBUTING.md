@@ -2,6 +2,10 @@
 
 To set up your development environment:
 
+#### Install Python
+
+- [pyenv](https://github.com/yyuu/pyenv) recommended.
+
 #### Install PostgreSQL
 
 [Installation varies by platform](http://www.postgresql.org/download/).
@@ -22,13 +26,19 @@ source venv/bin/activate
 
 ```shell
 pip install -r requirements.txt
-bundle install
 ```
 
 #### Install NLTK data
 
 ```shell
 python -m nltk.downloader all
+```
+
+#### Create the database and set `DATABASE_URL`
+
+```shell
+psql --command="CREATE DATABASE baker_street_development;"
+export DATABASE_URL="postgresql://localhost/baker_street_development"
 ```
 
 #### Migrate the database
