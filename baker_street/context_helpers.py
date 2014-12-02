@@ -126,10 +126,3 @@ def assertion(text, context, n):
             count += 1
 
     return final
-
-if __name__ == '__main__':
-    print(relevent_words('http://en.wikipedia.org/wiki/Wikipedia', True))
-
-
-
-
