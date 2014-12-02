@@ -2,6 +2,10 @@
 
 To set up your development environment:
 
+#### Install Python
+
+- [pyenv](https://github.com/yyuu/pyenv) recommended.
+
 #### Install PostgreSQL
 
 [Installation varies by platform](http://www.postgresql.org/download/).
