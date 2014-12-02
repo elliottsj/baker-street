@@ -185,7 +185,7 @@ class CanLIIDocument(models.Model):
             # There's a bug here when it's just None and hasen't been loaded yet it could get psoted
             # even if it's repealed. Should do a loop checking for repealing legislation if length
             # of models is longer than 1
-            if len(models == 0):
+            if len(models) == 0:
                 return None
             model = models[0]
             if not model.populated:
@@ -213,7 +213,7 @@ class CanLIIDocument(models.Model):
             # There's a bug here when it's just None and hasen't been loaded yet it could get psoted
             # even if it's repealed. Should do a loop checking for repealing legislation if length
             # of models is longer than 1
-            if len(models == 0):
+            if len(models) == 0:
                 return None
             model = models[0]
             if not model.populated:
