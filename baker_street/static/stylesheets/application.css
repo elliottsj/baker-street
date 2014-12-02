@@ -16,6 +16,22 @@ body {
   font-family: 'Open Sans', Arial, sans-serif;
 }
 
+label {
+  display: block;
+  margin-bottom: 0.25em;
+}
+
+input {
+  border: 1px solid #4179a1;
+  border-radius: 3px;
+  font-family: 'Open Sans', Arial, sans-serif;
+  padding: 0.3em 0.5em;
+}
+
+input + label {
+  margin-top: 1em;
+}
+
 
 /* Login/register forms */
 
@@ -45,7 +61,7 @@ body {
   }
 
   #form-header {
-    background: #e8eeef url('../images/logo_white_name.png') no-repeat center center;
+    background: #4179a1 url('../images/logo_white_name.png') no-repeat center center;
     background-size: auto 45px;
     height: 110px;
   }
