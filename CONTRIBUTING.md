@@ -35,6 +35,13 @@ bundle install
 python -m nltk.downloader all
 ```
 
+#### Create the database and set `DATABASE_URL`
+
+```shell
+psql --command="CREATE DATABASE baker_street_development;"
+export DATABASE_URL="postgresql://localhost/baker_street_development"
+```
+
 #### Migrate the database
 
 ```shell
