@@ -14,11 +14,14 @@ body {
 body {
   background-color: #e8eeef;
   font-family: 'Open Sans', Arial, sans-serif;
+  padding-top: 2em;
 }
 
 label {
+  color: #4179a1;
   display: block;
   margin-bottom: 0.25em;
+  text-align: left;
 }
 
 input {
@@ -26,6 +29,7 @@ input {
   border-radius: 3px;
   font-family: 'Open Sans', Arial, sans-serif;
   padding: 0.3em 0.5em;
+  width: 100%;
 }
 
 input + label {
@@ -40,12 +44,12 @@ input + label {
   border-radius: 5px;
   box-shadow: 0 2px 4px #bbb;
   color: #e8eeef;
-  margin: 2em auto;
+  margin: 0 auto;
   width: 280px;
 }
 
   input[type='submit'] {
-    background-color: #e8eeef;
+    background-color: #4179a1;
     border: none;
     border-radius: 5px;
     box-shadow: 0 1px 3px #a8a8a8;
@@ -53,7 +57,7 @@ input + label {
     cursor: pointer;
     display: block;
     font-family: 'Open Sans', Arial, sans-serif;
-    margin: 1em auto 0;
+    margin: 2em auto 1em;
     padding: 0.75em 1.5em;
     height: 3em;
     width: 10em;
@@ -63,12 +67,22 @@ input + label {
   #form-header {
     background: #4179a1 url('../images/logo_white_name.png') no-repeat center center;
     background-size: auto 45px;
+    border-radius: 5px 5px 0 0;
     height: 110px;
   }
 
   #form-contents {
     background-color: #fff;
     border-radius: 0 0 5px 5px;
-    padding: 2em;
-    text-align: center;
+    padding: 1em 2em;
   }
+
+  .errorlist {
+    color: #4179a1;
+    margin-bottom: 1em;
+  }
+
+    .errorlist li {
+      font-size: 0.85em;
+      list-style: none;
+    }
